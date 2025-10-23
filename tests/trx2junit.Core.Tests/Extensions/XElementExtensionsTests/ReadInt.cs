@@ -4,43 +4,44 @@ using System;
 using System.Xml.Linq;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.Extensions.XElementExtensionsTests;
-
-[TestFixture]
-public class ReadInt
+namespace gfoidl.Trx2Junit.Core.Tests.Extensions.XElementExtensionsTests
 {
-    [Test]
-    public void Xml_with_valid_int_given___OK()
+    [TestFixture]
+    public class ReadInt
     {
-        int expected = new Random(42).Next();
-        var xml      = new XElement("data", new XAttribute("value", expected));
-
-        int? actual = xml.ReadInt("value");
-
-        Assert.Multiple(() =>
+        [Test]
+        public void Xml_with_valid_int_given___OK()
         {
-            Assert.IsTrue(actual.HasValue);
-            Assert.AreEqual(expected, actual);
-        });
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    public void Xml_without_int_value___null()
-    {
-        var xml = new XElement("data", new XAttribute("foo", "abc"));
+            int expected = new Random(42).Next();
+            var xml = new XElement("data", new XAttribute("value", expected));
 
-        int? actual = xml.ReadInt("foo");
+            int? actual = xml.ReadInt("value");
 
-        Assert.IsFalse(actual.HasValue);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    public void Attribute_does_not_exists_on_xml___null()
-    {
-        var xml = new XElement("data");
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(actual.HasValue);
+                Assert.AreEqual(expected, actual);
+            });
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        public void Xml_without_int_value___null()
+        {
+            var xml = new XElement("data", new XAttribute("foo", "abc"));
 
-        int? actual = xml.ReadInt("foo");
+            int? actual = xml.ReadInt("foo");
 
-        Assert.IsFalse(actual.HasValue);
+            Assert.IsFalse(actual.HasValue);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        public void Attribute_does_not_exists_on_xml___null()
+        {
+            var xml = new XElement("data");
+
+            int? actual = xml.ReadInt("foo");
+
+            Assert.IsFalse(actual.HasValue);
+        }
     }
 }

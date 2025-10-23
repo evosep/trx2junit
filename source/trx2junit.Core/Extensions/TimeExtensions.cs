@@ -11,58 +11,59 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
 
-namespace gfoidl.Trx2Junit.Core;
-
-internal static class TimeExtensions
+namespace gfoidl.Trx2Junit.Core
 {
-    private static readonly char[] s_junitTimeTemplate   = "0000-00-00T00:00:00"          .ToCharArray();
-    private static readonly char[] s_trxDateTimeTemplate = "0000-00-00T00:00:00.000+00:00".ToCharArray();
-    //-------------------------------------------------------------------------
-    public static string ToJUnitDateTime(this DateTime dt)
+
+    internal static class TimeExtensions
     {
-        return string.Create(19, dt, static (buffer, value) => FormatDateTime(buffer, value));
-    }
-    //-------------------------------------------------------------------------
-    public static string ToTrxDateTime(this DateTimeOffset dt)
-    {
-        return string.Create(19 + 1 + 3 + 6, dt, static (buffer, value) =>
+        private static readonly char[] s_junitTimeTemplate = "0000-00-00T00:00:00".ToCharArray();
+        private static readonly char[] s_trxDateTimeTemplate = "0000-00-00T00:00:00.000+00:00".ToCharArray();
+        //-------------------------------------------------------------------------
+        public static string ToJUnitDateTime(this DateTime dt)
         {
-            s_trxDateTimeTemplate.CopyTo(buffer);
-            FormatDateTime(buffer, value);
-
-            value.Millisecond.TryFormat(buffer.Slice(20), out int written, "000");
-            Debug.Assert(written == 3);
-
-            int offsetHours = value.Offset.Hours;
-            if (offsetHours < 0)
-            {
-                buffer[23] = '-';
-                offsetHours = -offsetHours;
-            }
-            offsetHours.TryFormat(buffer.Slice(24), out written, "00");
-            Debug.Assert(written == 2);
-        });
-    }
-    //-------------------------------------------------------------------------
-    public static string ToJUnitTime(this double value) => value.ToString("0.000", CultureInfo.InvariantCulture);
-    //-------------------------------------------------------------------------
-    public static DateTimeOffset? ParseDateTime(this string value)
-    {
-        ReadOnlySpan<char> span = value.AsSpan();
-
-        if (span.Length != 19 && span.Length != 29)
-        {
-            return SlowPath(value);
+            return string.Create(19, dt, static (buffer, value) => FormatDateTime(buffer, value));
         }
-
-        try
+        //-------------------------------------------------------------------------
+        public static string ToTrxDateTime(this DateTimeOffset dt)
         {
-            int year;
-            int month;
-            int day;
-            int hour;
-            int minute;
-            int second;
+            return string.Create(19 + 1 + 3 + 6, dt, static (buffer, value) =>
+            {
+                s_trxDateTimeTemplate.CopyTo(buffer);
+                FormatDateTime(buffer, value);
+
+                value.Millisecond.TryFormat(buffer.Slice(20), out int written, "000");
+                Debug.Assert(written == 3);
+
+                int offsetHours = value.Offset.Hours;
+                if (offsetHours < 0)
+                {
+                    buffer[23] = '-';
+                    offsetHours = -offsetHours;
+                }
+                offsetHours.TryFormat(buffer.Slice(24), out written, "00");
+                Debug.Assert(written == 2);
+            });
+        }
+        //-------------------------------------------------------------------------
+        public static string ToJUnitTime(this double value) => value.ToString("0.000", CultureInfo.InvariantCulture);
+        //-------------------------------------------------------------------------
+        public static DateTimeOffset? ParseDateTime(this string value)
+        {
+            ReadOnlySpan<char> span = value.AsSpan();
+
+            if (span.Length != 19 && span.Length != 29)
+            {
+                return SlowPath(value);
+            }
+
+            try
+            {
+                int year;
+                int month;
+                int day;
+                int hour;
+                int minute;
+                int second;
 
 #if NET6_0_OR_GREATER
             if (Sse41.IsSupported && Globals.VectorsEnabled)
@@ -72,43 +73,43 @@ internal static class TimeExtensions
             }
             else
 #endif
-            {
-                if (!TryParseDateTimeScalar(span, out year, out month, out day, out hour, out minute, out second))
-                    return null;
+                {
+                    if (!TryParseDateTimeScalar(span, out year, out month, out day, out hour, out minute, out second))
+                        return null;
+                }
+
+                int millisecond = 0;
+                TimeSpan offset = TimeSpan.Zero;
+
+                if (value.Length == 29)
+                {
+                    if (!span[20..24].TryParse3DigitIntFast(out millisecond))
+                        return null;
+
+                    if (!span[24..25].TryParse2DigitIntFast(out int offsetHours))
+                        return null;
+
+                    offset = TimeSpan.FromHours(offsetHours);
+                }
+
+                return new DateTimeOffset(year, month, day, hour, minute, second, millisecond, offset);
             }
-
-            int millisecond = 0;
-            TimeSpan offset = TimeSpan.Zero;
-
-            if (value.Length == 29)
+            catch
             {
-                if (!span[20..24].TryParse3DigitIntFast(out millisecond))
-                    return null;
-
-                if (!span[24..25].TryParse2DigitIntFast(out int offsetHours))
-                    return null;
-
-                offset = TimeSpan.FromHours(offsetHours);
+                return SlowPath(value);
             }
+            //---------------------------------------------------------------------
+            static DateTimeOffset? SlowPath(string value)
+            {
+                if (!DateTimeOffset.TryParse(value, out DateTimeOffset dt))
+                    return null;
 
-            return new DateTimeOffset(year, month, day, hour, minute, second, millisecond, offset);
+                return dt;
+            }
         }
-        catch
+        //-------------------------------------------------------------------------
+        private static void FormatDateTime(Span<char> buffer, DateTimeOffset value)
         {
-            return SlowPath(value);
-        }
-        //---------------------------------------------------------------------
-        static DateTimeOffset? SlowPath(string value)
-        {
-            if (!DateTimeOffset.TryParse(value, out DateTimeOffset dt))
-                return null;
-
-            return dt;
-        }
-    }
-    //-------------------------------------------------------------------------
-    private static void FormatDateTime(Span<char> buffer, DateTimeOffset value)
-    {
 #if NET6_0_OR_GREATER
         if (Sse41.IsSupported && Globals.VectorsEnabled)
         {
@@ -116,58 +117,58 @@ internal static class TimeExtensions
         }
         else
 #endif
-        {
-            FormatDateTimeScalar(buffer, value);
+            {
+                FormatDateTimeScalar(buffer, value);
+            }
         }
-    }
-    //-------------------------------------------------------------------------
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void FormatDateTimeScalar(Span<char> buffer, DateTimeOffset value)
-    {
-        Debug.Assert(s_junitTimeTemplate.Length <= buffer.Length);
-        s_junitTimeTemplate.CopyTo(buffer);
-
-        value.Year  .TryFormat(buffer, out int _);
-        value.Month .Format2DigitIntFast(buffer.Slice(5));
-        value.Day   .Format2DigitIntFast(buffer.Slice(8));
-        value.Hour  .Format2DigitIntFast(buffer.Slice(11));
-        value.Minute.Format2DigitIntFast(buffer.Slice(14));
-        value.Second.Format2DigitIntFast(buffer.Slice(17));
-    }
-    //-------------------------------------------------------------------------
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TryParseDateTimeScalar(
-        ReadOnlySpan<char> value,
-        out int year,
-        out int month,
-        out int day,
-        out int hour,
-        out int minute,
-        out int second)
-    {
-        Debug.Assert(value.Length >= 19);
-
-        if (value[ 0.. 2].TryParse2DigitIntFast(out int tmp)
-            && value[ 2.. 4].TryParse2DigitIntFast(out year)
-            && value[ 5.. 7].TryParse2DigitIntFast(out month)
-            && value[ 8..10].TryParse2DigitIntFast(out day)
-            && value[11..13].TryParse2DigitIntFast(out hour)
-            && value[14..16].TryParse2DigitIntFast(out minute)
-            && value[17..19].TryParse2DigitIntFast(out second))
+        //-------------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void FormatDateTimeScalar(Span<char> buffer, DateTimeOffset value)
         {
-            year += tmp * 100;
-            return true;
-        }
+            Debug.Assert(s_junitTimeTemplate.Length <= buffer.Length);
+            s_junitTimeTemplate.CopyTo(buffer);
 
-        year   = 0;
-        month  = 0;
-        day    = 0;
-        hour   = 0;
-        minute = 0;
-        second = 0;
-        return false;
-    }
-    //-------------------------------------------------------------------------
+            value.Year.TryFormat(buffer, out int _);
+            value.Month.Format2DigitIntFast(buffer.Slice(5));
+            value.Day.Format2DigitIntFast(buffer.Slice(8));
+            value.Hour.Format2DigitIntFast(buffer.Slice(11));
+            value.Minute.Format2DigitIntFast(buffer.Slice(14));
+            value.Second.Format2DigitIntFast(buffer.Slice(17));
+        }
+        //-------------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryParseDateTimeScalar(
+            ReadOnlySpan<char> value,
+            out int year,
+            out int month,
+            out int day,
+            out int hour,
+            out int minute,
+            out int second)
+        {
+            Debug.Assert(value.Length >= 19);
+
+            if (value[0..2].TryParse2DigitIntFast(out int tmp)
+                && value[2..4].TryParse2DigitIntFast(out year)
+                && value[5..7].TryParse2DigitIntFast(out month)
+                && value[8..10].TryParse2DigitIntFast(out day)
+                && value[11..13].TryParse2DigitIntFast(out hour)
+                && value[14..16].TryParse2DigitIntFast(out minute)
+                && value[17..19].TryParse2DigitIntFast(out second))
+            {
+                year += tmp * 100;
+                return true;
+            }
+
+            year = 0;
+            month = 0;
+            day = 0;
+            hour = 0;
+            minute = 0;
+            second = 0;
+            return false;
+        }
+        //-------------------------------------------------------------------------
 #if NET6_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void FormatDateTimeSse41(Span<char> buffer, DateTimeOffset value)
@@ -320,4 +321,5 @@ internal static class TimeExtensions
         return true;
     }
 #endif
+    }
 }

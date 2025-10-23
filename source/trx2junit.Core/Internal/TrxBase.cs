@@ -2,9 +2,11 @@
 
 using System.Xml.Linq;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
-
-public abstract class TrxBase
+namespace gfoidl.Trx2Junit.Core.Internal
 {
-    protected internal static readonly XNamespace s_XN = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
+
+    public abstract class TrxBase
+    {
+        protected internal static readonly XNamespace s_XN = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
+    }
 }

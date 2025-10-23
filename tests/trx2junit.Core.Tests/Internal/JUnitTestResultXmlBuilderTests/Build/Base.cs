@@ -8,20 +8,21 @@ using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnitTestResultXmlBuilderTests.Build;
-
-[TestFixture]
-public abstract class Base
+namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnitTestResultXmlBuilderTests.Build
 {
-    private protected readonly TrxTest _trxTest = new();
-    private protected JUnitTest        _junitTest;
-    //-------------------------------------------------------------------------
-    protected List<XElement> GetTestSuites()
+    [TestFixture]
+    public abstract class Base
     {
-        var builder = new Builders.JUnitTestResultXmlBuilder(_junitTest);
+        private protected readonly TrxTest _trxTest = new();
+        private protected JUnitTest _junitTest;
+        //-------------------------------------------------------------------------
+        protected List<XElement> GetTestSuites()
+        {
+            var builder = new Builders.JUnitTestResultXmlBuilder(_junitTest);
 
-        builder.Build();
+            builder.Build();
 
-        return builder.Result.Elements("testsuite").ToList();
+            return builder.Result.Elements("testsuite").ToList();
+        }
     }
 }

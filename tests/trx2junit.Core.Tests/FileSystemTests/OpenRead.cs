@@ -3,18 +3,19 @@
 using System.IO;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests;
-
-[TestFixture]
-public class OpenRead
+namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests
 {
-    [Test]
-    public void Path_given___OK()
+    [TestFixture]
+    public class OpenRead
     {
-        string path = "./data/trx/nunit.trx";
-        var sut     = new FileSystem();
+        [Test]
+        public void Path_given___OK()
+        {
+            string path = "./data/trx/nunit.trx";
+            var sut = new FileSystem();
 
-        using Stream actual = sut.OpenRead(path);
-        Assert.IsNotNull(actual);
+            using Stream actual = sut.OpenRead(path);
+            Assert.IsNotNull(actual);
+        }
     }
 }

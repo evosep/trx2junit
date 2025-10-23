@@ -2,12 +2,14 @@
 
 using System.Xml.Linq;
 
-namespace gfoidl.Trx2Junit.Core.Abstractions;
-
-public interface ITestResultXmlBuilder<TTest> where TTest : Models.Test
+namespace gfoidl.Trx2Junit.Core.Abstractions
 {
-    TTest Test      { get; }
-    XElement Result { get; }
-    //-------------------------------------------------------------------------
-    void Build();
+
+    public interface ITestResultXmlBuilder<TTest> where TTest : Models.Test
+    {
+        TTest Test { get; }
+        XElement Result { get; }
+        //-------------------------------------------------------------------------
+        void Build();
+    }
 }

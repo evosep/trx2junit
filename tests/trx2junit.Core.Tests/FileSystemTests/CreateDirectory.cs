@@ -4,25 +4,26 @@ using System;
 using System.IO;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests;
-
-[TestFixture]
-public class CreateDirectory
+namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests
 {
-    [Test]
-    public void Path_given___OK()
+    [TestFixture]
+    public class CreateDirectory
     {
-        string path = $"./{Guid.NewGuid()}";
-        var sut     = new FileSystem();
-
-        sut.CreateDirectory(path);
-
-        DirectoryAssert.Exists(path);
-
-        try
+        [Test]
+        public void Path_given___OK()
         {
-            Directory.Delete(path);
+            string path = $"./{Guid.NewGuid()}";
+            var sut = new FileSystem();
+
+            sut.CreateDirectory(path);
+
+            DirectoryAssert.Exists(path);
+
+            try
+            {
+                Directory.Delete(path);
+            }
+            catch { }
         }
-        catch { }
     }
 }

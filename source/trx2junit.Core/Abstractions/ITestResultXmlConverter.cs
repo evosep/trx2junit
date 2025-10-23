@@ -3,10 +3,11 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace gfoidl.Trx2Junit.Core.Abstractions;
-
-public interface ITestResultXmlConverter
+namespace gfoidl.Trx2Junit.Core.Abstractions
 {
-    Task ConvertAsync(Stream input, TextWriter output);
-    string GetOutputFile(string inputFile, string? outputPath = null);
+    public interface ITestResultXmlConverter
+    {
+        Task ConvertAsync(Stream input, TextWriter output);
+        string GetOutputFile(string inputFile, string? outputPath = null);
+    }
 }

@@ -5,56 +5,57 @@ using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnit2TrxTestConverterTests;
-
-[TestFixture]
-public class GetOutcome
+namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnit2TrxTestConverterTests
 {
-    [Test]
-    public void All_tests_passed___Passed()
+    [TestFixture]
+    public class GetOutcome
     {
-        var jUnitTestSuite = new JUnitTestSuite
+        [Test]
+        public void All_tests_passed___Passed()
         {
-            TestCount    = 5,
-            ErrorCount   = 0,
-            FailureCount = 0,
-            SkippedCount = 0
-        };
+            var jUnitTestSuite = new JUnitTestSuite
+            {
+                TestCount = 5,
+                ErrorCount = 0,
+                FailureCount = 0,
+                SkippedCount = 0
+            };
 
-        TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
+            TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
 
-        Assert.AreEqual(TrxOutcome.Passed, actual);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    public void Tests_contain_failures___Failed()
-    {
-        var jUnitTestSuite = new JUnitTestSuite
+            Assert.AreEqual(TrxOutcome.Passed, actual);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        public void Tests_contain_failures___Failed()
         {
-            TestCount    = 5,
-            ErrorCount   = 0,
-            FailureCount = 1,
-            SkippedCount = 0
-        };
+            var jUnitTestSuite = new JUnitTestSuite
+            {
+                TestCount = 5,
+                ErrorCount = 0,
+                FailureCount = 1,
+                SkippedCount = 0
+            };
 
-        TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
+            TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
 
-        Assert.AreEqual(TrxOutcome.Failed, actual);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    public void Tests_contain_skipped___NotExecuted()
-    {
-        var jUnitTestSuite = new JUnitTestSuite
+            Assert.AreEqual(TrxOutcome.Failed, actual);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        public void Tests_contain_skipped___NotExecuted()
         {
-            TestCount    = 5,
-            ErrorCount   = 0,
-            FailureCount = 0,
-            SkippedCount = 1
-        };
+            var jUnitTestSuite = new JUnitTestSuite
+            {
+                TestCount = 5,
+                ErrorCount = 0,
+                FailureCount = 0,
+                SkippedCount = 1
+            };
 
-        TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
+            TrxOutcome actual = JUnit2TrxTestConverter.GetOutcome(jUnitTestSuite);
 
-        Assert.AreEqual(TrxOutcome.NotExecuted, actual);
+            Assert.AreEqual(TrxOutcome.NotExecuted, actual);
+        }
     }
 }

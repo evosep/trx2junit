@@ -6,136 +6,136 @@ using System.Threading.Tasks;
 using gfoidl.Trx2Junit.Core.Internal;
 using NUnit.Framework;
 
-namespace gfoidl.Trx2Junit.Core.Tests.WorkerTests;
-
-[TestFixture, NonParallelizable]
-public class ConvertAsync
+namespace gfoidl.Trx2Junit.Core.Tests.WorkerTests
 {
-    [OneTimeSetUp]
-    public void OneTimeSetUp() => CleanFiles();
-    //-------------------------------------------------------------------------
-    [OneTimeTearDown]
-    public void OneTimeTearDown() => CleanFiles();
-    //-------------------------------------------------------------------------
-    private static void CleanFiles()
+    [TestFixture, NonParallelizable]
+    public class ConvertAsync
     {
-        DeleteFiles("./data/trx"  , "*.xml");
-        DeleteFiles("./data/junit", "*.trx");
+        [OneTimeSetUp]
+        public void OneTimeSetUp() => CleanFiles();
         //-------------------------------------------------------------------------
-        static void DeleteFiles(string path, string extension)
+        [OneTimeTearDown]
+        public void OneTimeTearDown() => CleanFiles();
+        //-------------------------------------------------------------------------
+        private static void CleanFiles()
         {
-            foreach (string file in Directory.EnumerateFiles(path, extension, SearchOption.TopDirectoryOnly))
+            DeleteFiles("./data/trx", "*.xml");
+            DeleteFiles("./data/junit", "*.trx");
+            //-------------------------------------------------------------------------
+            static void DeleteFiles(string path, string extension)
             {
-                try
+                foreach (string file in Directory.EnumerateFiles(path, extension, SearchOption.TopDirectoryOnly))
                 {
-                    File.Delete(file);
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch { }
                 }
-                catch { }
             }
         }
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    [TestCase("./data/trx/mstest.trx")]
-    [TestCase("./data/trx/mstest-datadriven.trx")]
-    [TestCase("./data/trx/mstest-ignore.trx")]
-    [TestCase("./data/trx/mstest-warning.trx")]
-    [TestCase("./data/trx/nunit.trx")]
-    [TestCase("./data/trx/nunit-datadriven.trx")]
-    [TestCase("./data/trx/nunit-ignore.trx")]
-    [TestCase("./data/trx/nunit-with-stdout.trx")]
-    [TestCase("./data/trx/nunit-no-tests.trx")]
-    [TestCase("./data/trx/xunit.trx")]
-    [TestCase("./data/trx/xunit-datadriven.trx")]
-    [TestCase("./data/trx/xunit-ignore.trx")]
-    [TestCase("./data/trx/xunit-memberdata.trx")]
-    [TestCase("./data/trx/nunit-testresultaggregation.trx")]
-    public async Task Trx_file_given___converted(string trxFile)
-    {
-        string junitFile = Path.ChangeExtension(trxFile, "xml");
-        var sut          = new Worker();
+        //-------------------------------------------------------------------------
+        [Test]
+        [TestCase("./data/trx/mstest.trx")]
+        [TestCase("./data/trx/mstest-datadriven.trx")]
+        [TestCase("./data/trx/mstest-ignore.trx")]
+        [TestCase("./data/trx/mstest-warning.trx")]
+        [TestCase("./data/trx/nunit.trx")]
+        [TestCase("./data/trx/nunit-datadriven.trx")]
+        [TestCase("./data/trx/nunit-ignore.trx")]
+        [TestCase("./data/trx/nunit-with-stdout.trx")]
+        [TestCase("./data/trx/nunit-no-tests.trx")]
+        [TestCase("./data/trx/xunit.trx")]
+        [TestCase("./data/trx/xunit-datadriven.trx")]
+        [TestCase("./data/trx/xunit-ignore.trx")]
+        [TestCase("./data/trx/xunit-memberdata.trx")]
+        [TestCase("./data/trx/nunit-testresultaggregation.trx")]
+        public async Task Trx_file_given___converted(string trxFile)
+        {
+            string junitFile = Path.ChangeExtension(trxFile, "xml");
+            var sut = new Worker();
 
-        await sut.ConvertAsync(new Trx2JunitTestResultXmlConverter(), trxFile);
+            await sut.ConvertAsync(new Trx2JunitTestResultXmlConverter(), trxFile);
 
-        bool actual = File.Exists(junitFile);
-        Assert.IsTrue(actual);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    [TestCase("./data/trx/mstest.trx")]
-    [TestCase("./data/trx/mstest-datadriven.trx")]
-    [TestCase("./data/trx/mstest-ignore.trx")]
-    [TestCase("./data/trx/mstest-warning.trx")]
-    [TestCase("./data/trx/nunit.trx")]
-    [TestCase("./data/trx/nunit-datadriven.trx")]
-    [TestCase("./data/trx/nunit-ignore.trx")]
-    [TestCase("./data/trx/nunit-with-stdout.trx")]
-    [TestCase("./data/trx/nunit-no-tests.trx")]
-    [TestCase("./data/trx/xunit.trx")]
-    [TestCase("./data/trx/xunit-datadriven.trx")]
-    [TestCase("./data/trx/xunit-ignore.trx")]
-    [TestCase("./data/trx/xunit-memberdata.trx")]
-    [TestCase("./data/trx/nunit-testresultaggregation.trx")]
-    public async Task Trx_file_given___generated_xml_is_valid_against_schema(string trxFile)
-    {
-        string junitFile = Path.ChangeExtension(trxFile, "xml");
-        var sut          = new Worker();
+            bool actual = File.Exists(junitFile);
+            Assert.IsTrue(actual);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        [TestCase("./data/trx/mstest.trx")]
+        [TestCase("./data/trx/mstest-datadriven.trx")]
+        [TestCase("./data/trx/mstest-ignore.trx")]
+        [TestCase("./data/trx/mstest-warning.trx")]
+        [TestCase("./data/trx/nunit.trx")]
+        [TestCase("./data/trx/nunit-datadriven.trx")]
+        [TestCase("./data/trx/nunit-ignore.trx")]
+        [TestCase("./data/trx/nunit-with-stdout.trx")]
+        [TestCase("./data/trx/nunit-no-tests.trx")]
+        [TestCase("./data/trx/xunit.trx")]
+        [TestCase("./data/trx/xunit-datadriven.trx")]
+        [TestCase("./data/trx/xunit-ignore.trx")]
+        [TestCase("./data/trx/xunit-memberdata.trx")]
+        [TestCase("./data/trx/nunit-testresultaggregation.trx")]
+        public async Task Trx_file_given___generated_xml_is_valid_against_schema(string trxFile)
+        {
+            string junitFile = Path.ChangeExtension(trxFile, "xml");
+            var sut = new Worker();
 
-        await sut.ConvertAsync(new Trx2JunitTestResultXmlConverter(), trxFile);
+            await sut.ConvertAsync(new Trx2JunitTestResultXmlConverter(), trxFile);
 
-        ValidationHelper.IsXmlValidJunit(junitFile, validateJunit: true);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    [TestCase("./data/junit/mstest.xml")]
-    [TestCase("./data/junit/mstest-datadriven.xml")]
-    [TestCase("./data/junit/mstest-ignore.xml")]
-    [TestCase("./data/junit/mstest-warning.xml")]
-    [TestCase("./data/junit/nunit.xml")]
-    [TestCase("./data/junit/nunit-datadriven.xml")]
-    [TestCase("./data/junit/nunit-ignore.xml")]
-    [TestCase("./data/junit/nunit-no-tests.xml")]
-    [TestCase("./data/junit/xunit.xml")]
-    [TestCase("./data/junit/xunit-datadriven.xml")]
-    [TestCase("./data/junit/xunit-ignore.xml")]
-    [TestCase("./data/junit/xunit-memberdata.xml")]
-    [TestCase("./data/junit/jenkins-style.xml")]
-    public async Task JUnit_file_given___converted(string junitFile)
-    {
-        string trxFile = Path.ChangeExtension(junitFile, "trx");
-        var sut        = new Worker();
+            ValidationHelper.IsXmlValidJunit(junitFile, validateJunit: true);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        [TestCase("./data/junit/mstest.xml")]
+        [TestCase("./data/junit/mstest-datadriven.xml")]
+        [TestCase("./data/junit/mstest-ignore.xml")]
+        [TestCase("./data/junit/mstest-warning.xml")]
+        [TestCase("./data/junit/nunit.xml")]
+        [TestCase("./data/junit/nunit-datadriven.xml")]
+        [TestCase("./data/junit/nunit-ignore.xml")]
+        [TestCase("./data/junit/nunit-no-tests.xml")]
+        [TestCase("./data/junit/xunit.xml")]
+        [TestCase("./data/junit/xunit-datadriven.xml")]
+        [TestCase("./data/junit/xunit-ignore.xml")]
+        [TestCase("./data/junit/xunit-memberdata.xml")]
+        [TestCase("./data/junit/jenkins-style.xml")]
+        public async Task JUnit_file_given___converted(string junitFile)
+        {
+            string trxFile = Path.ChangeExtension(junitFile, "trx");
+            var sut = new Worker();
 
-        await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
+            await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
 
-        bool actual = File.Exists(trxFile);
-        Assert.IsTrue(actual);
-    }
-    //-------------------------------------------------------------------------
-    [Test]
-    [TestCase("./data/junit/mstest.xml")]
-    [TestCase("./data/junit/mstest-datadriven.xml")]
-    [TestCase("./data/junit/mstest-ignore.xml")]
-    [TestCase("./data/junit/mstest-warning.xml")]
-    [TestCase("./data/junit/nunit.xml")]
-    [TestCase("./data/junit/nunit-datadriven.xml")]
-    [TestCase("./data/junit/nunit-ignore.xml")]
-    [TestCase("./data/junit/nunit-no-tests.xml")]
-    [TestCase("./data/junit/xunit.xml")]
-    [TestCase("./data/junit/xunit-datadriven.xml")]
-    [TestCase("./data/junit/xunit-ignore.xml")]
-    [TestCase("./data/junit/xunit-memberdata.xml")]
-    [TestCase("./data/junit/jenkins-style.xml")]
-    public async Task JUnit_file_given___generated_xml_is_valid_against_schema(string junitFile)
-    {
-        string trxFile = Path.ChangeExtension(junitFile, "trx");
-        var sut        = new Worker();
+            bool actual = File.Exists(trxFile);
+            Assert.IsTrue(actual);
+        }
+        //-------------------------------------------------------------------------
+        [Test]
+        [TestCase("./data/junit/mstest.xml")]
+        [TestCase("./data/junit/mstest-datadriven.xml")]
+        [TestCase("./data/junit/mstest-ignore.xml")]
+        [TestCase("./data/junit/mstest-warning.xml")]
+        [TestCase("./data/junit/nunit.xml")]
+        [TestCase("./data/junit/nunit-datadriven.xml")]
+        [TestCase("./data/junit/nunit-ignore.xml")]
+        [TestCase("./data/junit/nunit-no-tests.xml")]
+        [TestCase("./data/junit/xunit.xml")]
+        [TestCase("./data/junit/xunit-datadriven.xml")]
+        [TestCase("./data/junit/xunit-ignore.xml")]
+        [TestCase("./data/junit/xunit-memberdata.xml")]
+        [TestCase("./data/junit/jenkins-style.xml")]
+        public async Task JUnit_file_given___generated_xml_is_valid_against_schema(string junitFile)
+        {
+            string trxFile = Path.ChangeExtension(junitFile, "trx");
+            var sut = new Worker();
 
-        await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
+            await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
 
-        Assume.That(junitFile, Is.Not.EqualTo("./data/junit/nunit-no-tests.xml"), "not valid, VS will open it. Conversion so far OK");
-        ValidationHelper.IsXmlValidJunit(trxFile, validateJunit: false);
-    }
-    //-------------------------------------------------------------------------
+            Assume.That(junitFile, Is.Not.EqualTo("./data/junit/nunit-no-tests.xml"), "not valid, VS will open it. Conversion so far OK");
+            ValidationHelper.IsXmlValidJunit(trxFile, validateJunit: false);
+        }
+        //-------------------------------------------------------------------------
 #if HAS_CONSOLE_OUTPUT
     [Test]
     [TestCase("./data/junit/no-junit.xml")]
@@ -161,19 +161,20 @@ public class ConvertAsync
         });
     }
 #else
-    [Test]
-    [TestCase("./data/junit/no-junit.xml")]
-    public async Task Junit_is_not_valid___throws_Exception(string junitFile)
-    {
-        string trxFile = Path.ChangeExtension(junitFile, "trx");
-        var sut        = new Worker();
+        [Test]
+        [TestCase("./data/junit/no-junit.xml")]
+        public async Task Junit_is_not_valid___throws_Exception(string junitFile)
+        {
+            string trxFile = Path.ChangeExtension(junitFile, "trx");
+            var sut = new Worker();
 
-        string actualMessage = null;
-        sut.WorkerErrorNotification += (s, e) => actualMessage = e.Message;
+            string actualMessage = null;
+            sut.WorkerErrorNotification += (s, e) => actualMessage = e.Message;
 
-        await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
+            await sut.ConvertAsync(new Junit2TrxTestResultXmlConverter(), junitFile);
 
-        Assert.AreEqual("Given xml file is not a valid junit file", actualMessage);
-    }
+            Assert.AreEqual("Given xml file is not a valid junit file", actualMessage);
+        }
 #endif
+    }
 }

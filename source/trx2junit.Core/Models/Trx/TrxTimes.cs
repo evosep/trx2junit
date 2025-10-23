@@ -2,14 +2,15 @@
 
 using System;
 
-namespace gfoidl.Trx2Junit.Core.Models.Trx;
-
-public sealed class TrxTimes
+namespace gfoidl.Trx2Junit.Core.Models.Trx
 {
-    public DateTimeOffset? Creation { get; set; }
-    public DateTimeOffset? Queuing  { get; set; }
-    public DateTimeOffset? Start    { get; set; }
-    public DateTimeOffset? Finish   { get; set; }
-    //-------------------------------------------------------------------------
-    public TimeSpan? RunTime => this.Finish - this.Creation;
+    public sealed class TrxTimes
+    {
+        public DateTimeOffset? Creation { get; set; }
+        public DateTimeOffset? Queuing { get; set; }
+        public DateTimeOffset? Start { get; set; }
+        public DateTimeOffset? Finish { get; set; }
+        //-------------------------------------------------------------------------
+        public TimeSpan? RunTime => this.Finish - this.Creation;
+    }
 }
