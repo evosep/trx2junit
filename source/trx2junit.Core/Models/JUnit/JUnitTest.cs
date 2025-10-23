@@ -7,6 +7,6 @@ namespace gfoidl.Trx2Junit.Core.Models.JUnit
 
     public sealed class JUnitTest : Test
     {
-        public List<JUnitTestSuite> TestSuites { get; set; } = new();
+        public List<JUnitTestSuite> TestSuites { get; set; } = new List<JUnitTestSuite>();
     }
 }

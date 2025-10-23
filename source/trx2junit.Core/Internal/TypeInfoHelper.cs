@@ -9,7 +9,7 @@ namespace gfoidl.Trx2Junit.Core
     internal static class TypeInfoHelper
     {
         [return: NotNullIfNotNull(nameof(name))]
-        public static string? StripTypeInfo(this string? name)
+        public static string StripTypeInfo(this string name)
         {
             if (name is null) return null;
 
@@ -38,10 +38,10 @@ namespace gfoidl.Trx2Junit.Core
                     return string.Create(
                         finalLength,
                         ((IntPtr)ptr0, preParenthesis.Length, (IntPtr)ptr1, parenthisContent.Length),
-                        static (buffer, state) =>
+                        (buffer, state) =>
                         {
-                            ReadOnlySpan<char> s0 = new(state.Item1.ToPointer(), state.Item2);
-                            ReadOnlySpan<char> s1 = new(state.Item3.ToPointer(), state.Item4);
+                            ReadOnlySpan<char> s0 = new ReadOnlySpan<char>(state.Item1.ToPointer(), state.Item2);
+                            ReadOnlySpan<char> s1 = new ReadOnlySpan<char>(state.Item3.ToPointer(), state.Item4);
 
                             s0.CopyTo(buffer);
                             s1.CopyTo(buffer.Slice(s0.Length));

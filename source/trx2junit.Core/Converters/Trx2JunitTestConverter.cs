@@ -15,7 +15,7 @@ namespace gfoidl.Trx2Junit.Core.Converters
     {
         private int _testId;
         private Counters _counters;
-        private ILookup<Guid, TrxUnitTestResult>? _trxTestDefinitionLookup;
+        private ILookup<Guid, TrxUnitTestResult> _trxTestDefinitionLookup;
         //-------------------------------------------------------------------------
         public TrxTest SourceTest { get; }
         public JUnitTest Result { get; } = new JUnitTest();
@@ -68,7 +68,7 @@ namespace gfoidl.Trx2Junit.Core.Converters
         private void AddTest(JUnitTestSuite junitTestSuite, TrxTestDefinition trxTestDefinition)
         {
             Debug.Assert(_trxTestDefinitionLookup != null);
-            IEnumerable<TrxUnitTestResult> trxUnitTestResults = _trxTestDefinitionLookup![trxTestDefinition.Id];
+            IEnumerable<TrxUnitTestResult> trxUnitTestResults = _trxTestDefinitionLookup[trxTestDefinition.Id];
 
             foreach (TrxUnitTestResult trxUnitTestResult in trxUnitTestResults)
             {

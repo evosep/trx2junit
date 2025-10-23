@@ -19,7 +19,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.GlobHandlerTests
             _fileSystemMock = new Mock<IFileSystem>();
         }
         //---------------------------------------------------------------------
-        private GlobHandler CreateSut() => new(_fileSystemMock.Object);
+        private GlobHandler CreateSut() => new GlobHandler(_fileSystemMock.Object);
         //-------------------------------------------------------------------------
         [Test]
         public void WorkerOptions_without_wildcards___nothing_changed()

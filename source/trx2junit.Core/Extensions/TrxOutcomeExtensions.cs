@@ -7,21 +7,21 @@ namespace gfoidl.Trx2Junit.Core
 {
     internal static class TrxOutcomeExtensions
     {
-        private static readonly HashSet<TrxOutcome> s_successStates = new()     // :-( capacity can't be set on NS2.0
+        private static readonly HashSet<TrxOutcome> s_successStates = new HashSet<TrxOutcome>()     // :-( capacity can't be set on NS2.0
     {
         TrxOutcome.Completed,
         TrxOutcome.Passed,
         TrxOutcome.PassedButRunAborted
     };
 
-        private static readonly HashSet<TrxOutcome> s_skippedStates = new()
+        private static readonly HashSet<TrxOutcome> s_skippedStates = new HashSet<TrxOutcome>()
     {
         TrxOutcome.NotExecuted,
         TrxOutcome.NotRunnable,
         TrxOutcome.Disconnected
     };
 
-        private static readonly HashSet<TrxOutcome> s_failureStates = new()
+        private static readonly HashSet<TrxOutcome> s_failureStates = new HashSet<TrxOutcome>()
     {
         TrxOutcome.Aborted,
         TrxOutcome.Error,

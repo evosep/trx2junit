@@ -34,7 +34,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Internal.TrxTestResultXmlParserTests
 
             return actual.HasValue
                 ? (int)actual
-                : null;
+                : (int?)null;
         }
         //-------------------------------------------------------------------------
         private static IEnumerable<TestCaseData> Value_given___correct_outcome_parsed_TestCases()

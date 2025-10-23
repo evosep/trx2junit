@@ -14,7 +14,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.TrxOutcomeExtensionsTests
         {
             TrxOutcome? value = trxOutcome.HasValue
                 ? (TrxOutcome)trxOutcome.Value
-                : null;
+                : (TrxOutcome?)null;
 
             return value.IsFailure();
         }

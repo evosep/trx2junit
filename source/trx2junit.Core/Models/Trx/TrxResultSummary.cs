@@ -5,7 +5,7 @@ namespace gfoidl.Trx2Junit.Core.Models.Trx
     public sealed class TrxResultSummary
     {
         public TrxOutcome Outcome { get; set; } = TrxOutcome.Passed;
-        public string? StdOut { get; set; }
+        public string StdOut { get; set; }
         public int? Total { get; set; } = 0;
         public int? Executed { get; set; } = 0;
         public int? Passed { get; set; } = 0;

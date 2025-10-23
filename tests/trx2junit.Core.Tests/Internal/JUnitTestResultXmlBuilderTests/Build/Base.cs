@@ -13,7 +13,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnitTestResultXmlBuilderTests.Bu
     [TestFixture]
     public abstract class Base
     {
-        private protected readonly TrxTest _trxTest = new();
+        private protected readonly TrxTest _trxTest = new TrxTest();
         private protected JUnitTest _junitTest;
         //-------------------------------------------------------------------------
         protected List<XElement> GetTestSuites()

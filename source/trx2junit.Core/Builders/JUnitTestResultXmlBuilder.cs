@@ -12,9 +12,9 @@ namespace gfoidl.Trx2Junit.Core.Builders
     public sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTest>
     {
         private readonly JUnitTest _test;
-        private readonly XElement _xJUnit = new("testsuites");
-        private StringBuilder? _junitTestSuiteSystemOutStringBuilder;
-        private StringBuilder? _junitTestSuiteSystemErrStringBuilder;
+        private readonly XElement _xJUnit = new XElement("testsuites");
+        private StringBuilder _junitTestSuiteSystemOutStringBuilder;
+        private StringBuilder _junitTestSuiteSystemErrStringBuilder;
         //-------------------------------------------------------------------------
         public JUnitTestResultXmlBuilder(JUnitTest test) => _test = test ?? throw new ArgumentNullException(nameof(test));
         //-------------------------------------------------------------------------
@@ -33,10 +33,10 @@ namespace gfoidl.Trx2Junit.Core.Builders
         {
             var xTestSuite = new XElement("testsuite");
 
-            xTestSuite.Add(new XAttribute("name", testSuite.Name!));
+            xTestSuite.Add(new XAttribute("name", testSuite.Name));
             xTestSuite.Add(new XAttribute("hostname", testSuite.HostName ?? "-"));
             xTestSuite.Add(new XAttribute("package", "not available"));
-            xTestSuite.Add(new XAttribute("id", testSuite.Id!));
+            xTestSuite.Add(new XAttribute("id", testSuite.Id));
 
             xTestSuite.Add(new XElement("properties"));
 
@@ -46,9 +46,9 @@ namespace gfoidl.Trx2Junit.Core.Builders
             }
 
             xTestSuite.Add(new XAttribute("tests", testSuite.TestCount));
-            xTestSuite.Add(new XAttribute("failures", testSuite.FailureCount!));
-            xTestSuite.Add(new XAttribute("errors", testSuite.ErrorCount!));
-            xTestSuite.Add(new XAttribute("skipped", testSuite.SkippedCount!));
+            xTestSuite.Add(new XAttribute("failures", testSuite.FailureCount));
+            xTestSuite.Add(new XAttribute("errors", testSuite.ErrorCount));
+            xTestSuite.Add(new XAttribute("skipped", testSuite.SkippedCount));
             xTestSuite.Add(new XAttribute("time", testSuite.TimeInSeconds.ToJUnitTime()));
             xTestSuite.Add(new XAttribute("timestamp", testSuite.TimeStamp.ToJUnitDateTime()));
 
@@ -80,31 +80,31 @@ namespace gfoidl.Trx2Junit.Core.Builders
             var xTestCase = new XElement("testcase");
             xTestSuite.Add(xTestCase);
 
-            xTestCase.Add(new XAttribute("name", testCase.Name!));
-            xTestCase.Add(new XAttribute("classname", testCase.ClassName!));
+            xTestCase.Add(new XAttribute("name", testCase.Name));
+            xTestCase.Add(new XAttribute("classname", testCase.ClassName));
             xTestCase.Add(new XAttribute("time", testCase.TimeInSeconds.ToJUnitTime()));
 
             if (testCase.Skipped)
             {
                 xTestCase.Add(new XElement("skipped"));
 
-                if (Globals.JUnitTestCaseStatusSkipped is not null)
+                if (Globals.JUnitTestCaseStatusSkipped != null)
                 {
                     xTestCase.Add(new XAttribute("status", Globals.JUnitTestCaseStatusSkipped));
                 }
             }
             else if (testCase.Error != null)
             {
-                string? failureContent = Globals.JUnitErrorMessageRepeatCData
+                string failureContent = Globals.JUnitErrorMessageRepeatCData
                     ? $"{testCase.Error.Message}\n{testCase.Error.StackTrace?.TrimEnd()}"
                     : testCase.Error.StackTrace?.TrimEnd();
 
-                XElement xFailure = new("failure",
-                    new XAttribute("message", testCase.Error.Message!),
-                    new XAttribute("type", testCase.Error.Type!)
+                XElement xFailure = new XElement("failure",
+                    new XAttribute("message", testCase.Error.Message),
+                    new XAttribute("type", testCase.Error.Type)
                 );
 
-                if (failureContent is not null)
+                if (failureContent != null)
                 {
                     xFailure.Add(new XCData(failureContent));
                 }
@@ -121,7 +121,8 @@ namespace gfoidl.Trx2Junit.Core.Builders
             {
                 xTestCase.Add(new XElement("system-err", testCase.SystemErr));
 
-                _junitTestSuiteSystemErrStringBuilder ??= new StringBuilder();
+                if (_junitTestSuiteSystemErrStringBuilder == null)
+                    _junitTestSuiteSystemErrStringBuilder = new StringBuilder();
                 _junitTestSuiteSystemErrStringBuilder.AppendLine(testCase.SystemErr);
             }
 
@@ -129,7 +130,8 @@ namespace gfoidl.Trx2Junit.Core.Builders
             {
                 xTestCase.Add(new XElement("system-out", testCase.SystemOut));
 
-                _junitTestSuiteSystemOutStringBuilder ??= new StringBuilder();
+                if (_junitTestSuiteSystemOutStringBuilder == null)
+                    _junitTestSuiteSystemOutStringBuilder = new StringBuilder();
                 _junitTestSuiteSystemOutStringBuilder.AppendLine(testCase.SystemOut);
             }
         }

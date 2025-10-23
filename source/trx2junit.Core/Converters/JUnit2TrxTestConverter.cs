@@ -60,7 +60,7 @@ namespace gfoidl.Trx2Junit.Core.Converters
             if (this.Result.TestDefinitions.Count > 0)
             {
                 Debug.Assert(trxTimes.Creation.HasValue);
-                trxTimes.Finish = trxTimes.Creation!.Value + executionTime;
+                trxTimes.Finish = trxTimes.Creation.Value + executionTime;
 
                 this.Result.Times = trxTimes;
                 this.Result.ResultSummary = trxResultSummary;

@@ -25,12 +25,12 @@ namespace gfoidl.Trx2Junit.Core
         /// <summary>
         /// Event that is fired when the worker triggers a notification.
         /// </summary>
-        public event EventHandler<WorkerNotificationEventArgs>? WorkerNotification;
+        public event EventHandler<WorkerNotificationEventArgs> WorkerNotification;
 
         /// <summary>
         /// Event that is fired when the worker triggers an error.
         /// </summary>
-        public event EventHandler<WorkerNotificationEventArgs>? WorkerErrorNotification;
+        public event EventHandler<WorkerNotificationEventArgs> WorkerErrorNotification;
         //-------------------------------------------------------------------------
         /// <summary>
         /// Creates a new instance of <see cref="Worker"/>.
@@ -43,7 +43,7 @@ namespace gfoidl.Trx2Junit.Core
         /// Implementation of the <see cref="IGlobHandler"/>.
         /// When <c>null</c> is passed, an default internal implementation is used.
         /// </param>
-        public Worker(IFileSystem? fileSystem = null, IGlobHandler? globHandler = null)
+        public Worker(IFileSystem fileSystem = null, IGlobHandler globHandler = null)
         {
             _fileSystem = fileSystem ?? new FileSystem();
             _globHandler = globHandler ?? new GlobHandler(_fileSystem);
@@ -99,29 +99,30 @@ namespace gfoidl.Trx2Junit.Core
         }
         //-------------------------------------------------------------------------
         // internal for testing
-        internal async Task ConvertAsync(ITestResultXmlConverter converter, string inputFile, string? outputPath = null)
+        internal async Task ConvertAsync(ITestResultXmlConverter converter, string inputFile, string outputPath = null)
         {
             string outputFile = converter.GetOutputFile(inputFile, outputPath);
 
             this.EnsureOutputDirectoryExists(outputFile);
             this.OnNotification($"Converting '{inputFile}' to '{outputFile}'");
 
-            using Stream input = _fileSystem.OpenRead(inputFile);
-            using TextWriter output = new StreamWriter(outputFile, false, s_utf8);
-
-            try
+            using (var input = _fileSystem.OpenRead(inputFile))
+            using (var output = new StreamWriter(outputFile, false, s_utf8))
             {
-                await converter.ConvertAsync(input, output).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                this.OnErrorNotification(ex.Message);
+                try
+                {
+                    await converter.ConvertAsync(input, output).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    this.OnErrorNotification(ex.Message);
+                }
             }
         }
         //-------------------------------------------------------------------------
         private void EnsureOutputDirectoryExists(string outputFile)
         {
-            string? directory = Path.GetDirectoryName(outputFile);
+            string directory = Path.GetDirectoryName(outputFile);
 
             if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
                 _fileSystem.CreateDirectory(directory);

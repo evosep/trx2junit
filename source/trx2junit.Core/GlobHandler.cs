@@ -40,7 +40,7 @@ namespace gfoidl.Trx2Junit.Core
             if (options is null) throw new ArgumentNullException(nameof(options));
 #endif
 
-            List<string> expandedFiles = new();
+            List<string> expandedFiles = new List<string>();
 
             foreach (string inpupt in options.InputFiles)
             {
@@ -58,11 +58,11 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         private void Expand(string input, List<string> expandedFiles)
         {
-            string? path = Path.GetDirectoryName(input);
-            string? pattern = Path.GetFileName(input);
+            string path = Path.GetDirectoryName(input);
+            string pattern = Path.GetFileName(input);
 
-            Debug.Assert(path is not null);
-            Debug.Assert(pattern is not null);
+            Debug.Assert(path != null);
+            Debug.Assert(pattern != null);
 
             IEnumerable<string> files = _fileSystem.EnumerateFiles(path, pattern);
 

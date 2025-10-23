@@ -86,7 +86,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnitTestResultXmlBuilderTests
                 Assert.AreEqual(expectedContent, actualContent);
             });
 
-            static string NormalizeLineEndings(string input)
+            string NormalizeLineEndings(string input)
                 => input.Replace("\r\n", "\n");
         }
         //-------------------------------------------------------------------------

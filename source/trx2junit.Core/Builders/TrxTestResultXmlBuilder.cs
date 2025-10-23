@@ -15,7 +15,7 @@ namespace gfoidl.Trx2Junit.Core.Builders
         private static readonly Guid s_testTypeId = Guid.Parse("13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b");
 
         private readonly TrxTest _test;
-        private readonly XElement _xTrx = new(s_XN + "TestRun");
+        private readonly XElement _xTrx = new XElement(s_XN + "TestRun");
         private readonly Guid _testListId = Guid.NewGuid();
         //-------------------------------------------------------------------------
         public TrxTestResultXmlBuilder(TrxTest test) => _test = test ?? throw new ArgumentNullException(nameof(test));
@@ -41,7 +41,7 @@ namespace gfoidl.Trx2Junit.Core.Builders
             var xTimes = new XElement(s_XN + "Times");
             _xTrx.Add(xTimes);
 
-            TrxTimes? times = _test.Times;
+            TrxTimes times = _test.Times;
 
             if (times != null)
             {
@@ -60,7 +60,7 @@ namespace gfoidl.Trx2Junit.Core.Builders
             var xCounters = new XElement(s_XN + "Counters");
             xResultSummary.Add(xCounters);
 
-            TrxResultSummary? resultSummary = _test.ResultSummary;
+            TrxResultSummary resultSummary = _test.ResultSummary;
             if (resultSummary != null)
             {
                 xResultSummary.Add(new XAttribute("outcome", resultSummary.Outcome.ToString()));
@@ -86,11 +86,11 @@ namespace gfoidl.Trx2Junit.Core.Builders
             {
                 xTestDefinitions.Add(new XElement(s_XN + "UnitTest",
                     new XAttribute("id", trxTestDefinition.Id),
-                    new XAttribute("name", trxTestDefinition.TestMethod!),
-                    new XElement(s_XN + "Execution", new XAttribute("id", trxTestDefinition.ExecutionId!)),
+                    new XAttribute("name", trxTestDefinition.TestMethod),
+                    new XElement(s_XN + "Execution", new XAttribute("id", trxTestDefinition.ExecutionId)),
                     new XElement(s_XN + "TestMethod",
-                        new XAttribute("className", trxTestDefinition.TestClass!),
-                        new XAttribute("name", trxTestDefinition.TestMethod!),
+                        new XAttribute("className", trxTestDefinition.TestClass),
+                        new XAttribute("name", trxTestDefinition.TestMethod),
                         new XAttribute("codeBase", "not available")
                     )
                 ));
@@ -112,16 +112,16 @@ namespace gfoidl.Trx2Junit.Core.Builders
 
                 xUnitTestResult.Add(new XAttribute("executionId", unitTestResult.ExecutionId));
                 xUnitTestResult.Add(new XAttribute("testId", unitTestResult.TestId));
-                xUnitTestResult.Add(new XAttribute("testName", unitTestResult.TestName!));
-                xUnitTestResult.Add(new XAttribute("outcome", unitTestResult.Outcome!));
-                xUnitTestResult.Add(new XAttribute("computerName", unitTestResult.ComputerName!));
+                xUnitTestResult.Add(new XAttribute("testName", unitTestResult.TestName));
+                xUnitTestResult.Add(new XAttribute("outcome", unitTestResult.Outcome));
+                xUnitTestResult.Add(new XAttribute("computerName", unitTestResult.ComputerName));
                 xUnitTestResult.Add(new XAttribute("testType", s_testTypeId));
                 xUnitTestResult.Add(new XAttribute("testListId", _testListId));
                 xUnitTestResult.WriteTrxDateTime("startTime", unitTestResult.StartTime);
                 xUnitTestResult.WriteTrxDateTime("endTime", unitTestResult.EndTime);
                 xUnitTestResult.Write("duration", unitTestResult.Duration);
 
-                XElement? xOutput = null;
+                XElement xOutput = null;
 
                 if (unitTestResult.Message != null || unitTestResult.StackTrace != null)
                 {
@@ -143,13 +143,15 @@ namespace gfoidl.Trx2Junit.Core.Builders
 
                 if (unitTestResult.StdOut != null)
                 {
-                    xOutput ??= new XElement(s_XN + "Output");
+                    if (xOutput == null)
+                        xOutput = new XElement(s_XN + "Output");
                     xOutput.Add(new XElement(s_XN + "StdOut", unitTestResult.StdOut));
                 }
 
                 if (unitTestResult.StdErr != null)
                 {
-                    xOutput ??= new XElement(s_XN + "Output");
+                    if (xOutput == null)
+                        xOutput = new XElement(s_XN + "Output");
                     xOutput.Add(new XElement(s_XN + "StdErr", unitTestResult.StdErr));
                 }
 

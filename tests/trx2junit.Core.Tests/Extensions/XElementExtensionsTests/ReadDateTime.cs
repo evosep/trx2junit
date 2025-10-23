@@ -12,7 +12,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.XElementExtensionsTests
         [Test]
         public void Xml_with_valid_DateTime_given___OK()
         {
-            DateTimeOffset now = new(2019, 11, 10, 15, 33, 27, TimeSpan.FromHours(1d));
+            DateTimeOffset now = new DateTimeOffset(2019, 11, 10, 15, 33, 27, TimeSpan.FromHours(1d));
             var xml = new XElement("data", new XAttribute("dt", now.UtcDateTime.ToJUnitDateTime()));
 
             DateTimeOffset? actual = xml.ReadDateTime("dt");

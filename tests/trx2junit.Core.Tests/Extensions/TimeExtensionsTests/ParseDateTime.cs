@@ -11,7 +11,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.TimeExtensionsTests
         [Test]
         public void Valid_JUnitDateTime___OK()
         {
-            DateTimeOffset now = new(2019, 11, 10, 15, 33, 27, TimeSpan.FromHours(1d));
+            DateTimeOffset now = new DateTimeOffset(2019, 11, 10, 15, 33, 27, TimeSpan.FromHours(1d));
             string value = now.UtcDateTime.ToJUnitDateTime();
 
             DateTimeOffset? actual = value.ParseDateTime();
@@ -36,7 +36,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.TimeExtensionsTests
                 {
                     for (int second = 0; second < 60; ++second)
                     {
-                        DateTimeOffset dt = new(year, month, day, hour, minute, second, TimeSpan.FromHours(1d));
+                        DateTimeOffset dt = new DateTimeOffset(year, month, day, hour, minute, second, TimeSpan.FromHours(1d));
                         string value = dt.UtcDateTime.ToJUnitDateTime();
 
                         DateTimeOffset? actual = value.ParseDateTime();
@@ -54,7 +54,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.TimeExtensionsTests
         [Test]
         public void Valid_TrxDateTime___OK([Values(-1, 0, 1)] int offset)
         {
-            DateTimeOffset now = new(2019, 11, 10, 15, 33, 27, 123, TimeSpan.FromHours(offset));
+            DateTimeOffset now = new DateTimeOffset(2019, 11, 10, 15, 33, 27, 123, TimeSpan.FromHours(offset));
             string value = now.ToTrxDateTime();
 
             DateTimeOffset? actual = value.ParseDateTime();

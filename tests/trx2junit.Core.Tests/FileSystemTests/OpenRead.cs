@@ -1,6 +1,5 @@
 // (c) gfoidl, all rights reserved
 
-using System.IO;
 using NUnit.Framework;
 
 namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests
@@ -14,8 +13,8 @@ namespace gfoidl.Trx2Junit.Core.Tests.FileSystemTests
             string path = "./data/trx/nunit.trx";
             var sut = new FileSystem();
 
-            using Stream actual = sut.OpenRead(path);
-            Assert.IsNotNull(actual);
+            using (var actual = sut.OpenRead(path))
+                Assert.IsNotNull(actual);
         }
     }
 }

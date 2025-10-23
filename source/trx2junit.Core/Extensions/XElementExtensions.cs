@@ -10,13 +10,13 @@ namespace gfoidl.Trx2Junit.Core
     {
         public static DateTimeOffset? ReadDateTime(this XElement element, string attributeName)
         {
-            string? value = (string?)element.Attribute(attributeName);
-            return value!.ParseDateTime();
+            string value = (string)element.Attribute(attributeName);
+            return value.ParseDateTime();
         }
         //-------------------------------------------------------------------------
         public static TimeSpan? ReadTimeSpan(this XElement element, string attributeName)
         {
-            string? value = (string?)element.Attribute(attributeName);
+            string value = (string)element.Attribute(attributeName);
 
             if (!TimeSpan.TryParse(value, out TimeSpan ts))
                 return null;
@@ -26,7 +26,7 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         public static int? ReadInt(this XElement element, string attributeName)
         {
-            string? value = (string?)element.Attribute(attributeName);
+            string value = (string)element.Attribute(attributeName);
 
             if (!int.TryParse(value, out int res))
                 return null;
@@ -36,7 +36,7 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         public static double ReadDouble(this XElement element, string attributeName)
         {
-            string? value = (string?)element.Attribute(attributeName);
+            string value = (string)element.Attribute(attributeName);
 
             if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double res))
                 throw new Exception($"The required attribute '{attributeName}' does not exists");
@@ -46,7 +46,7 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         public static Guid ReadGuid(this XElement element, string attributeName)
         {
-            string? value = (string?)element.Attribute(attributeName);
+            string value = (string)element.Attribute(attributeName);
 
             return Guid.TryParse(value, out Guid guid)
                 ? guid
@@ -63,7 +63,7 @@ namespace gfoidl.Trx2Junit.Core
 
             if (!nullable.HasValue) return false;
 
-            element.Add(new XAttribute(attributeName, nullable.Value.ToString()!));
+            element.Add(new XAttribute(attributeName, nullable.Value.ToString()));
 
             return true;
         }

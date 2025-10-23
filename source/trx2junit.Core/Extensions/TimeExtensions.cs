@@ -21,12 +21,12 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         public static string ToJUnitDateTime(this DateTime dt)
         {
-            return string.Create(19, dt, static (buffer, value) => FormatDateTime(buffer, value));
+            return string.Create(19, dt, (buffer, value) => FormatDateTime(buffer, value));
         }
         //-------------------------------------------------------------------------
         public static string ToTrxDateTime(this DateTimeOffset dt)
         {
-            return string.Create(19 + 1 + 3 + 6, dt, static (buffer, value) =>
+            return string.Create(19 + 1 + 3 + 6, dt, (buffer, value) =>
             {
                 s_trxDateTimeTemplate.CopyTo(buffer);
                 FormatDateTime(buffer, value);
@@ -83,10 +83,11 @@ namespace gfoidl.Trx2Junit.Core
 
                 if (value.Length == 29)
                 {
-                    if (!span[20..24].TryParse3DigitIntFast(out millisecond))
+                    
+                    if (!span.Slice(20, 24-20).TryParse3DigitIntFast(out millisecond))
                         return null;
 
-                    if (!span[24..25].TryParse2DigitIntFast(out int offsetHours))
+                    if (!span.Slice(24, 25-34).TryParse2DigitIntFast(out int offsetHours))
                         return null;
 
                     offset = TimeSpan.FromHours(offsetHours);
@@ -99,9 +100,9 @@ namespace gfoidl.Trx2Junit.Core
                 return SlowPath(value);
             }
             //---------------------------------------------------------------------
-            static DateTimeOffset? SlowPath(string value)
+            DateTimeOffset? SlowPath(string v)
             {
-                if (!DateTimeOffset.TryParse(value, out DateTimeOffset dt))
+                if (!DateTimeOffset.TryParse(v, out DateTimeOffset dt))
                     return null;
 
                 return dt;
@@ -148,13 +149,13 @@ namespace gfoidl.Trx2Junit.Core
         {
             Debug.Assert(value.Length >= 19);
 
-            if (value[0..2].TryParse2DigitIntFast(out int tmp)
-                && value[2..4].TryParse2DigitIntFast(out year)
-                && value[5..7].TryParse2DigitIntFast(out month)
-                && value[8..10].TryParse2DigitIntFast(out day)
-                && value[11..13].TryParse2DigitIntFast(out hour)
-                && value[14..16].TryParse2DigitIntFast(out minute)
-                && value[17..19].TryParse2DigitIntFast(out second))
+            if (value.Slice(0, 2-0).TryParse2DigitIntFast(out int tmp)
+                && value.Slice(2, 4-2).TryParse2DigitIntFast(out year)
+                && value.Slice(5, 7-5).TryParse2DigitIntFast(out month)
+                && value.Slice(8, 10-8).TryParse2DigitIntFast(out day)
+                && value.Slice(11, 13-11).TryParse2DigitIntFast(out hour)
+                && value.Slice(14, 16-14).TryParse2DigitIntFast(out minute)
+                && value.Slice(17, 19-17).TryParse2DigitIntFast(out second))
             {
                 year += tmp * 100;
                 return true;

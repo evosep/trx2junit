@@ -22,7 +22,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.WorkerTests
             DeleteFiles("./data/trx", "*.xml");
             DeleteFiles("./data/junit", "*.trx");
             //-------------------------------------------------------------------------
-            static void DeleteFiles(string path, string extension)
+            void DeleteFiles(string path, string extension)
             {
                 foreach (string file in Directory.EnumerateFiles(path, extension, SearchOption.TopDirectoryOnly))
                 {

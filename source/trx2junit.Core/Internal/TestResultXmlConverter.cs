@@ -36,7 +36,7 @@ namespace gfoidl.Trx2Junit.Core.Internal
             await builder.Result.SaveAsync(output, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
         }
         //-------------------------------------------------------------------------
-        public string GetOutputFile(string inputFile, string? outputPath = null)
+        public string GetOutputFile(string inputFile, string outputPath = null)
         {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputFile);

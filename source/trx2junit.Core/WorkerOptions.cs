@@ -18,7 +18,7 @@ namespace gfoidl.Trx2Junit.Core
         /// <summary>
         /// The directory where the converted files are stored.
         /// </summary>
-        public string? OutputDirectory { get; }
+        public string OutputDirectory { get; }
 
         /// <summary>
         /// Indicates the direction of conversion. When <c>true</c> the conversion is
@@ -35,7 +35,7 @@ namespace gfoidl.Trx2Junit.Core
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="inputFiles"/> is <c>null</c>.
         /// </exception>
-        public WorkerOptions(IList<string> inputFiles, string? outputDirectory = null, bool convertToJunit = true)
+        public WorkerOptions(IList<string> inputFiles, string outputDirectory = null, bool convertToJunit = true)
         {
 #if NET6_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(inputFiles);
@@ -67,7 +67,7 @@ namespace gfoidl.Trx2Junit.Core
 #endif
 
             var inputFiles = new List<string>();
-            string? outputDirectory = null;
+            string outputDirectory = null;
             bool convertToJunit = true;
 
             for (int i = 0; i < args.Length; ++i)

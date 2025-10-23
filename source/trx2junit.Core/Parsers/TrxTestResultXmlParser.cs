@@ -16,7 +16,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
     public sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<TrxTest>
     {
         private readonly XElement _trx;
-        private readonly TrxTest _test = new();
+        private readonly TrxTest _test = new TrxTest();
         //-------------------------------------------------------------------------
         public TrxTestResultXmlParser(XElement trx) => _trx = trx ?? throw new ArgumentNullException(nameof(trx));
         //-------------------------------------------------------------------------
@@ -32,7 +32,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         //-------------------------------------------------------------------------
         private void ReadTimes()
         {
-            XElement xTimes = _trx.Element(s_XN + "Times")!;
+            XElement xTimes = _trx.Element(s_XN + "Times");
 
             _test.Times = new TrxTimes
             {
@@ -45,12 +45,12 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         //-------------------------------------------------------------------------
         private void ReadResultSummary()
         {
-            XElement xResultSummary = _trx.Element(s_XN + "ResultSummary")!;
-            XElement xCounters = xResultSummary.Element(s_XN + "Counters")!;
+            XElement xResultSummary = _trx.Element(s_XN + "ResultSummary");
+            XElement xCounters = xResultSummary.Element(s_XN + "Counters");
 
             _test.ResultSummary = new TrxResultSummary
             {
-                Outcome = ReadOutcome(xResultSummary.Attribute("outcome")!.Value).Value,
+                Outcome = ReadOutcome(xResultSummary.Attribute("outcome").Value).Value,
                 Errors = xCounters.ReadInt("error"),
                 Executed = xCounters.ReadInt("executed"),
                 Failed = xCounters.ReadInt("failed"),
@@ -69,7 +69,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         //-------------------------------------------------------------------------
         private void ReadTestDefinitions()
         {
-            XElement xTestDefinitions = _trx.Element(s_XN + "TestDefinitions")!;
+            XElement xTestDefinitions = _trx.Element(s_XN + "TestDefinitions");
 
             if (xTestDefinitions == null) return;
 
@@ -79,7 +79,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
 
                 testDefinition.Id = xUnitTest.ReadGuid("id");
                 testDefinition.ExecutionId = xUnitTest.Element(s_XN + "Execution")?.ReadGuid("id");
-                testDefinition.TestClass = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("className")!.Value;
+                testDefinition.TestClass = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("className").Value;
                 testDefinition.TestMethod = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("name")?.Value.StripTypeInfo();
 
                 _test.TestDefinitions.Add(testDefinition);
@@ -88,13 +88,13 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         //-------------------------------------------------------------------------
         private void ReadUnitTestResults()
         {
-            XElement? xResults = _trx.Element(s_XN + "Results");
+            XElement xResults = _trx.Element(s_XN + "Results");
 
             if (xResults == null) return;
 
             foreach (XElement xResult in GetResultItems(xResults))
             {
-                XElement? xInnerResults = xResult.Element(s_XN + "InnerResults");
+                XElement xInnerResults = xResult.Element(s_XN + "InnerResults");
                 if (xInnerResults == null)
                 {
                     TrxUnitTestResult unitTestResult = ParseUnitTestResults(xResult);
@@ -116,7 +116,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
                     // MsTest counts the wrapper test, but we won't count it
                     // https://github.com/gfoidl/trx2junit/pull/40#issuecomment-484682771
                     Debug.Assert(_test?.ResultSummary != null);
-                    _test!.ResultSummary!.Total--;
+                    _test.ResultSummary.Total--;
 
                     if (hasFailedTest)
                         _test.ResultSummary.Failed--;
@@ -161,17 +161,17 @@ namespace gfoidl.Trx2Junit.Core.Parsers
                 ComputerName = xResult.Attribute("computerName")?.Value
             };
 
-            XElement? xOutput = xResult.Element(s_XN + "Output");
+            XElement xOutput = xResult.Element(s_XN + "Output");
             if (xOutput != null)
             {
-                XElement? xErrorInfo = xOutput.Element(s_XN + "ErrorInfo");
+                XElement xErrorInfo = xOutput.Element(s_XN + "ErrorInfo");
                 if (xErrorInfo != null)
                 {
-                    XElement? xMessage = xErrorInfo.Element(s_XN + "Message");
+                    XElement xMessage = xErrorInfo.Element(s_XN + "Message");
                     if (xMessage != null)
                         unitTestResult.Message = xMessage.Value;
 
-                    XElement? xStackTrace = xErrorInfo.Element(s_XN + "StackTrace");
+                    XElement xStackTrace = xErrorInfo.Element(s_XN + "StackTrace");
                     if (xStackTrace != null)
                         unitTestResult.StackTrace = xStackTrace.Value;
                 }
@@ -188,7 +188,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         }
         //-------------------------------------------------------------------------
         // internal for testing
-        internal static TrxOutcome? ReadOutcome(string? value, [DoesNotReturnIf(true)] bool isRequired = true)
+        internal static TrxOutcome? ReadOutcome(string value, [DoesNotReturnIf(true)] bool isRequired = true)
         {
             if (Enum.TryParse(value, ignoreCase: true, out TrxOutcome result))
                 return result;

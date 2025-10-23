@@ -12,7 +12,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
     public sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
     {
         private readonly XElement _junit;
-        private readonly JUnitTest _test = new();
+        private readonly JUnitTest _test = new JUnitTest();
         //-------------------------------------------------------------------------
         public JUnitTestResultXmlParser(XElement junit) => _junit = junit ?? throw new ArgumentNullException(nameof(junit));
         //-------------------------------------------------------------------------
@@ -45,14 +45,14 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         {
             var testSuite = new JUnitTestSuite
             {
-                Name = xTestSuite.Attribute("name")!.Value,
-                HostName = xTestSuite.Attribute("hostname")!.Value,
+                Name = xTestSuite.Attribute("name").Value,
+                HostName = xTestSuite.Attribute("hostname").Value,
                 Id = xTestSuite.ReadInt("id"),
                 ErrorCount = xTestSuite.ReadInt("errors"),
                 FailureCount = xTestSuite.ReadInt("failures"),
                 SkippedCount = xTestSuite.ReadInt("skipped"),
                 TimeInSeconds = xTestSuite.ReadDouble("time"),
-                TimeStamp = xTestSuite.ReadDateTime("timestamp")!.Value.UtcDateTime
+                TimeStamp = xTestSuite.ReadDateTime("timestamp").Value.UtcDateTime
             };
 
             int? testCount = xTestSuite.ReadInt("tests");
@@ -65,13 +65,13 @@ namespace gfoidl.Trx2Junit.Core.Parsers
                 throw new Exception(Strings.Xml_not_valid_junit_missing_tests);
             }
 
-            XElement? xStdErr = xTestSuite.Element("system-err");
+            XElement xStdErr = xTestSuite.Element("system-err");
             if (xStdErr != null)
             {
                 testSuite.SystemErr = xStdErr.Value;
             }
 
-            XElement? xStdOut = xTestSuite.Element("system-out");
+            XElement xStdOut = xTestSuite.Element("system-out");
             if (xStdOut != null)
             {
                 testSuite.SystemOut = xStdOut.Value;
@@ -79,7 +79,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
 
             foreach (XElement xProperty in xTestSuite.Elements("properties"))
             {
-                if (TryParseProperty(xProperty, out JUnitProperty? property))
+                if (TryParseProperty(xProperty, out JUnitProperty property))
                 {
                     testSuite.Properties.Add(property);
                 }
@@ -94,7 +94,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
             return testSuite;
         }
         //-------------------------------------------------------------------------
-        private static bool TryParseProperty(XElement xProperty, [NotNullWhen(true)] out JUnitProperty? property)
+        private static bool TryParseProperty(XElement xProperty, [NotNullWhen(true)] out JUnitProperty property)
         {
             if (!xProperty.HasAttributes)
             {
@@ -104,8 +104,8 @@ namespace gfoidl.Trx2Junit.Core.Parsers
 
             property = new JUnitProperty
             {
-                Name = xProperty.Attribute("name")!.Value,
-                Value = xProperty.Attribute("value")!.Value
+                Name = xProperty.Attribute("name").Value,
+                Value = xProperty.Attribute("value").Value
             };
 
             return true;
@@ -115,34 +115,34 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         {
             var testCase = new JUnitTestCase
             {
-                Name = xTestCase.Attribute("name")!.Value,
-                ClassName = xTestCase.Attribute("classname")!.Value,
+                Name = xTestCase.Attribute("name").Value,
+                ClassName = xTestCase.Attribute("classname").Value,
                 TimeInSeconds = xTestCase.ReadDouble("time"),
             };
 
-            XElement? xSkipped = xTestCase.Element("skipped");
+            XElement xSkipped = xTestCase.Element("skipped");
             if (xSkipped != null)
             {
                 testCase.Skipped = true;
             }
 
-            XElement? xFailure = xTestCase.Element("failure");
+            XElement xFailure = xTestCase.Element("failure");
             if (xFailure != null)
             {
                 testCase.Error = new JUnitError
                 {
-                    Type = xFailure.Attribute("type")!.Value,
-                    Message = xFailure.Attribute("message")!.Value
+                    Type = xFailure.Attribute("type").Value,
+                    Message = xFailure.Attribute("message").Value
                 };
             }
 
-            XElement? xStdErr = xTestCase.Element("system-err");
+            XElement xStdErr = xTestCase.Element("system-err");
             if (xStdErr != null)
             {
                 testCase.SystemErr = xStdErr.Value;
             }
 
-            XElement? xStdOut = xTestCase.Element("system-out");
+            XElement xStdOut = xTestCase.Element("system-out");
             if (xStdOut != null)
             {
                 testCase.SystemOut = xStdOut.Value;
