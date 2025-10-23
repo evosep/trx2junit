@@ -2,7 +2,7 @@
 
 namespace gfoidl.Trx2Junit.Core.Models.Trx;
 
-internal enum TrxOutcome
+public enum TrxOutcome
 {
     Aborted,
     Completed,

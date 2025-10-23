@@ -18,7 +18,7 @@ public abstract class Base
     //-------------------------------------------------------------------------
     protected List<XElement> GetTestSuites()
     {
-        var builder = new JUnitTestResultXmlBuilder(_junitTest);
+        var builder = new Builders.JUnitTestResultXmlBuilder(_junitTest);
 
         builder.Build();
 

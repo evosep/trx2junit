@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace gfoidl.Trx2Junit.Core.Abstractions;
 
-internal interface ITestResultXmlConverter
+public interface ITestResultXmlConverter
 {
     Task ConvertAsync(Stream input, TextWriter output);
     string GetOutputFile(string inputFile, string? outputPath = null);

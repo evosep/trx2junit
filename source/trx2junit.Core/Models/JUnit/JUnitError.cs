@@ -2,7 +2,7 @@
 
 namespace gfoidl.Trx2Junit.Core.Models.JUnit;
 
-internal sealed class JUnitError
+public sealed class JUnitError
 {
     public string? Message    { get; set; }
     public string? Type       { get; set; }

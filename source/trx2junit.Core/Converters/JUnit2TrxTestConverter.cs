@@ -8,12 +8,12 @@ using gfoidl.Trx2Junit.Core.Abstractions;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
+namespace gfoidl.Trx2Junit.Core.Converters;
 
-internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest>
+public sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest>
 {
     public JUnitTest SourceTest { get; }
-    public TrxTest Result       { get; } = new TrxTest();
+    public TrxTest Result { get; } = new TrxTest();
     //-------------------------------------------------------------------------
     public JUnit2TrxTestConverter(JUnitTest junitTest)
     {
@@ -27,23 +27,23 @@ internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest
     //-------------------------------------------------------------------------
     private void BuildResults(ICollection<JUnitTestSuite> jUnitTestSuites)
     {
-        var trxTimes         = new TrxTimes();
+        var trxTimes = new TrxTimes();
         var trxResultSummary = new TrxResultSummary();
 
         var resultSummaryStdOutStringBuilder = new StringBuilder();
-        TimeSpan executionTime               = default;
+        TimeSpan executionTime = default;
 
         foreach (JUnitTestSuite jUnitTestSuite in jUnitTestSuites)
         {
-            trxResultSummary.Total    += jUnitTestSuite.TestCount;
-            trxResultSummary.Errors   += jUnitTestSuite.ErrorCount                              ?? 0;
+            trxResultSummary.Total += jUnitTestSuite.TestCount;
+            trxResultSummary.Errors += jUnitTestSuite.ErrorCount ?? 0;
             trxResultSummary.Executed += jUnitTestSuite.TestCount - jUnitTestSuite.SkippedCount ?? 0;
-            trxResultSummary.Failed   += jUnitTestSuite.FailureCount                            ?? 0;
-            trxResultSummary.Passed   += (jUnitTestSuite.TestCount - (jUnitTestSuite.ErrorCount ?? 0) - (jUnitTestSuite.FailureCount ?? 0) - (jUnitTestSuite.SkippedCount ?? 0));
-            executionTime             += TimeSpan.FromSeconds(jUnitTestSuite.TimeInSeconds);
-            SetOutcome          (jUnitTestSuite, trxResultSummary);
+            trxResultSummary.Failed += jUnitTestSuite.FailureCount ?? 0;
+            trxResultSummary.Passed += jUnitTestSuite.TestCount - (jUnitTestSuite.ErrorCount ?? 0) - (jUnitTestSuite.FailureCount ?? 0) - (jUnitTestSuite.SkippedCount ?? 0);
+            executionTime += TimeSpan.FromSeconds(jUnitTestSuite.TimeInSeconds);
+            SetOutcome(jUnitTestSuite, trxResultSummary);
             SetCreationTimestamp(jUnitTestSuite, trxTimes);
-            SetOutput           (jUnitTestSuite, resultSummaryStdOutStringBuilder);
+            SetOutput(jUnitTestSuite, resultSummaryStdOutStringBuilder);
 
             foreach (JUnitTestCase junitTestCase in jUnitTestSuite.TestCases)
             {
@@ -61,7 +61,7 @@ internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest
             Debug.Assert(trxTimes.Creation.HasValue);
             trxTimes.Finish = trxTimes.Creation!.Value + executionTime;
 
-            this.Result.Times         = trxTimes;
+            this.Result.Times = trxTimes;
             this.Result.ResultSummary = trxResultSummary;
         }
     }
@@ -69,17 +69,17 @@ internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest
     private void ProcessTestCases(JUnitTestSuite jUnitTestSuite, JUnitTestCase jUnitTestCase)
     {
         Guid executionId = Guid.NewGuid();
-        Guid testId      = Guid.NewGuid();
+        Guid testId = Guid.NewGuid();
 
         var trxUnitTestResult = new TrxUnitTestResult
         {
-            ExecutionId  = executionId,
-            TestId       = testId,
-            StartTime    = jUnitTestSuite.TimeStamp,
-            Duration     = TimeSpan.FromSeconds(jUnitTestCase.TimeInSeconds),
-            EndTime      = jUnitTestSuite.TimeStamp.AddSeconds(jUnitTestCase.TimeInSeconds),
-            TestName     = jUnitTestCase.Name,
-            Outcome      = TrxOutcome.Passed,
+            ExecutionId = executionId,
+            TestId = testId,
+            StartTime = jUnitTestSuite.TimeStamp,
+            Duration = TimeSpan.FromSeconds(jUnitTestCase.TimeInSeconds),
+            EndTime = jUnitTestSuite.TimeStamp.AddSeconds(jUnitTestCase.TimeInSeconds),
+            TestName = jUnitTestCase.Name,
+            Outcome = TrxOutcome.Passed,
             ComputerName = jUnitTestSuite.HostName
         };
 
@@ -90,8 +90,8 @@ internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest
 
         if (jUnitTestCase.Error != null)
         {
-            trxUnitTestResult.Outcome    = TrxOutcome.Failed;
-            trxUnitTestResult.Message    = jUnitTestCase.Error.Message;
+            trxUnitTestResult.Outcome = TrxOutcome.Failed;
+            trxUnitTestResult.Message = jUnitTestCase.Error.Message;
             trxUnitTestResult.StackTrace = jUnitTestCase.Error.StackTrace;
         }
 
@@ -100,10 +100,10 @@ internal sealed class JUnit2TrxTestConverter : ITestConverter<JUnitTest, TrxTest
 
         var trxTestDefinition = new TrxTestDefinition
         {
-            Id          = testId,
+            Id = testId,
             ExecutionId = executionId,
-            TestClass   = jUnitTestCase.ClassName,
-            TestMethod  = jUnitTestCase.Name
+            TestClass = jUnitTestCase.ClassName,
+            TestMethod = jUnitTestCase.Name
         };
 
         this.Result.UnitTestResults.Add(trxUnitTestResult);

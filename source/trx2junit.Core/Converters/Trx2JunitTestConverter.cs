@@ -9,16 +9,16 @@ using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 using gfoidl.Trx2Junit.Core.Resources;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
+namespace gfoidl.Trx2Junit.Core.Converters;
 
-internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest>
+public sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest>
 {
-    private int                               _testId;
-    private Counters                          _counters;
+    private int _testId;
+    private Counters _counters;
     private ILookup<Guid, TrxUnitTestResult>? _trxTestDefinitionLookup;
     //-------------------------------------------------------------------------
     public TrxTest SourceTest { get; }
-    public JUnitTest Result   { get; } = new JUnitTest();
+    public JUnitTest Result { get; } = new JUnitTest();
     //-------------------------------------------------------------------------
     public Trx2JunitTestConverter(TrxTest trxTest)
     {
@@ -27,7 +27,7 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
     //-------------------------------------------------------------------------
     public void Convert()
     {
-        var testSuites           = this.SourceTest.TestDefinitions.GroupBy (t => t.TestClass);
+        var testSuites = this.SourceTest.TestDefinitions.GroupBy(t => t.TestClass);
         _trxTestDefinitionLookup = this.SourceTest.UnitTestResults.ToLookup(x => x.TestId);
 
         foreach (var testSuite in testSuites)
@@ -46,17 +46,17 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
         this.Result.TestSuites.Add(testSuite);
 
         testSuite.Name = testSuiteName;
-        testSuite.Id   = _testId++;
+        testSuite.Id = _testId++;
 
         foreach (TrxTestDefinition trxTest in trxTestDefinitions)
         {
             this.AddTest(testSuite, trxTest);
         }
 
-        testSuite.TestCount     = _counters.TestCount;
-        testSuite.FailureCount  = _counters.Failures;
-        testSuite.ErrorCount    = _counters.Errors;
-        testSuite.SkippedCount  = _counters.Skipped;
+        testSuite.TestCount = _counters.TestCount;
+        testSuite.FailureCount = _counters.Failures;
+        testSuite.ErrorCount = _counters.Errors;
+        testSuite.SkippedCount = _counters.Skipped;
         testSuite.TimeInSeconds = _counters.Time.TotalSeconds;
 
         if (_counters.TimeStamp.HasValue)
@@ -78,7 +78,7 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
             junitTestSuite.TestCases.Add(junitTestCase);
 
             junitTestSuite.HostName = trxUnitTestResult.ComputerName;
-            junitTestCase.Name      = trxUnitTestResult.TestName;
+            junitTestCase.Name = trxUnitTestResult.TestName;
             junitTestCase.ClassName = trxTestDefinition.TestClass;
 
             if (!_counters.TimeStamp.HasValue)
@@ -88,7 +88,7 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
 
             if (trxUnitTestResult.Duration.HasValue)
             {
-                _counters.Time             += trxUnitTestResult.Duration.Value;
+                _counters.Time += trxUnitTestResult.Duration.Value;
                 junitTestCase.TimeInSeconds = trxUnitTestResult.Duration.Value.TotalSeconds;
             }
 
@@ -103,8 +103,8 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
 
                 junitTestCase.Error = new JUnitError
                 {
-                    Message    = trxUnitTestResult.Message ?? "",        // Message is allowed to be null
-                    Type       = "not specified",
+                    Message = trxUnitTestResult.Message ?? "",        // Message is allowed to be null
+                    Type = "not specified",
                     StackTrace = trxUnitTestResult.StackTrace,
                 };
             }
@@ -118,13 +118,13 @@ internal sealed class Trx2JunitTestConverter : ITestConverter<TrxTest, JUnitTest
     //-------------------------------------------------------------------------
     private struct Counters
     {
-        public int             TestCount;
-        public int             Failures;
+        public int TestCount;
+        public int Failures;
 #pragma warning disable CS0649
-        public int             Errors;
+        public int Errors;
 #pragma warning restore CS0649
-        public int             Skipped;
-        public TimeSpan        Time;
+        public int Skipped;
+        public TimeSpan Time;
         public DateTimeOffset? TimeStamp;
     }
 }

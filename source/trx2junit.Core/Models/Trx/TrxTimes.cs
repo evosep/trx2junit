@@ -4,7 +4,7 @@ using System;
 
 namespace gfoidl.Trx2Junit.Core.Models.Trx;
 
-internal sealed class TrxTimes
+public sealed class TrxTimes
 {
     public DateTimeOffset? Creation { get; set; }
     public DateTimeOffset? Queuing  { get; set; }

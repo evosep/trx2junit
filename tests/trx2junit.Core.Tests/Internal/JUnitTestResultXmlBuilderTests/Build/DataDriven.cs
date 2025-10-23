@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
-using gfoidl.Trx2Junit.Core.Internal;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 using NUnit.Framework;
 
@@ -45,7 +44,7 @@ public class DataDriven : Base
                 });
         }
 
-        var converter = new Trx2JunitTestConverter(_trxTest);
+        var converter = new Converters.Trx2JunitTestConverter(_trxTest);
         converter.Convert();
         _junitTest    = converter.Result;
     }
@@ -53,7 +52,7 @@ public class DataDriven : Base
     [Test]
     public void Builds___OK()
     {
-        var sut = new JUnitTestResultXmlBuilder(_junitTest);
+        var sut = new Builders.JUnitTestResultXmlBuilder(_junitTest);
 
         sut.Build();
     }

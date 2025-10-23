@@ -6,18 +6,18 @@ using System.Xml.Linq;
 using gfoidl.Trx2Junit.Core.Abstractions;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
+namespace gfoidl.Trx2Junit.Core.Builders;
 
-internal sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTest>
+public sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTest>
 {
     private readonly JUnitTest _test;
-    private readonly XElement  _xJUnit = new("testsuites");
-    private StringBuilder?     _junitTestSuiteSystemOutStringBuilder;
-    private StringBuilder?     _junitTestSuiteSystemErrStringBuilder;
+    private readonly XElement _xJUnit = new("testsuites");
+    private StringBuilder? _junitTestSuiteSystemOutStringBuilder;
+    private StringBuilder? _junitTestSuiteSystemErrStringBuilder;
     //-------------------------------------------------------------------------
     public JUnitTestResultXmlBuilder(JUnitTest test) => _test = test ?? throw new ArgumentNullException(nameof(test));
     //-------------------------------------------------------------------------
-    public JUnitTest Test  => _test;
+    public JUnitTest Test => _test;
     public XElement Result => _xJUnit;
     //-------------------------------------------------------------------------
     public void Build()
@@ -32,10 +32,10 @@ internal sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTes
     {
         var xTestSuite = new XElement("testsuite");
 
-        xTestSuite.Add(new XAttribute("name"    , testSuite.Name!));
+        xTestSuite.Add(new XAttribute("name", testSuite.Name!));
         xTestSuite.Add(new XAttribute("hostname", testSuite.HostName ?? "-"));
-        xTestSuite.Add(new XAttribute("package" , "not available"));
-        xTestSuite.Add(new XAttribute("id"      , testSuite.Id!));
+        xTestSuite.Add(new XAttribute("package", "not available"));
+        xTestSuite.Add(new XAttribute("id", testSuite.Id!));
 
         xTestSuite.Add(new XElement("properties"));
 
@@ -44,11 +44,11 @@ internal sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTes
             this.AddTestCase(xTestSuite, testCase);
         }
 
-        xTestSuite.Add(new XAttribute("tests"    , testSuite.TestCount));
-        xTestSuite.Add(new XAttribute("failures" , testSuite.FailureCount!));
-        xTestSuite.Add(new XAttribute("errors"   , testSuite.ErrorCount!));
-        xTestSuite.Add(new XAttribute("skipped"  , testSuite.SkippedCount!));
-        xTestSuite.Add(new XAttribute("time"     , testSuite.TimeInSeconds.ToJUnitTime()));
+        xTestSuite.Add(new XAttribute("tests", testSuite.TestCount));
+        xTestSuite.Add(new XAttribute("failures", testSuite.FailureCount!));
+        xTestSuite.Add(new XAttribute("errors", testSuite.ErrorCount!));
+        xTestSuite.Add(new XAttribute("skipped", testSuite.SkippedCount!));
+        xTestSuite.Add(new XAttribute("time", testSuite.TimeInSeconds.ToJUnitTime()));
         xTestSuite.Add(new XAttribute("timestamp", testSuite.TimeStamp.ToJUnitDateTime()));
 
         if (_junitTestSuiteSystemOutStringBuilder?.Length > 0)
@@ -79,9 +79,9 @@ internal sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTes
         var xTestCase = new XElement("testcase");
         xTestSuite.Add(xTestCase);
 
-        xTestCase.Add(new XAttribute("name"     , testCase.Name!));
+        xTestCase.Add(new XAttribute("name", testCase.Name!));
         xTestCase.Add(new XAttribute("classname", testCase.ClassName!));
-        xTestCase.Add(new XAttribute("time"     , testCase.TimeInSeconds.ToJUnitTime()));
+        xTestCase.Add(new XAttribute("time", testCase.TimeInSeconds.ToJUnitTime()));
 
         if (testCase.Skipped)
         {
@@ -98,9 +98,9 @@ internal sealed class JUnitTestResultXmlBuilder : ITestResultXmlBuilder<JUnitTes
                 ? $"{testCase.Error.Message}\n{testCase.Error.StackTrace?.TrimEnd()}"
                 : testCase.Error.StackTrace?.TrimEnd();
 
-            XElement xFailure = new ("failure",
+            XElement xFailure = new("failure",
                 new XAttribute("message", testCase.Error.Message!),
-                new XAttribute("type"   , testCase.Error.Type!)
+                new XAttribute("type", testCase.Error.Type!)
             );
 
             if (failureContent is not null)

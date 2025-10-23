@@ -1,7 +1,6 @@
 // (c) gfoidl, all rights reserved
 
 using System.Xml.Linq;
-using gfoidl.Trx2Junit.Core.Internal;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
 using NUnit.Framework;
 
@@ -26,7 +25,7 @@ public class Parse
     public void File_given___correct_counts(string junitFile, int expectedTestCount, int expectedFailureCount, int expectedErrorCount)
     {
         XElement trx = XElement.Load(junitFile);
-        var sut      = new JUnitTestResultXmlParser(trx);
+        var sut      = new Parsers.JUnitTestResultXmlParser(trx);
 
         sut.Parse();
         JUnitTest actual = sut.Result;

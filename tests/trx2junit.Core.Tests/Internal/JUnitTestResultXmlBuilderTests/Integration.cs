@@ -2,9 +2,12 @@
 
 using System.Linq;
 using System.Xml.Linq;
+using gfoidl.Trx2Junit.Core.Builders;
+using gfoidl.Trx2Junit.Core.Converters;
 using gfoidl.Trx2Junit.Core.Internal;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Models.Trx;
+using gfoidl.Trx2Junit.Core.Parsers;
 using NUnit.Framework;
 
 namespace gfoidl.Trx2Junit.Core.Tests.Internal.JUnitTestResultXmlBuilderTests;

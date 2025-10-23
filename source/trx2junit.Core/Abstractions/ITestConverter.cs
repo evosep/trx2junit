@@ -2,7 +2,7 @@
 
 namespace gfoidl.Trx2Junit.Core.Abstractions;
 
-internal interface ITestConverter<TIn, TOut>
+public interface ITestConverter<TIn, TOut>
     where TIn  : Models.Test
     where TOut : Models.Test
 {

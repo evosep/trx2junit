@@ -2,5 +2,5 @@
 
 namespace gfoidl.Trx2Junit.Core.Models;
 
-internal abstract class Test
+public abstract class Test
 { }

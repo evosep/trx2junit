@@ -7,11 +7,11 @@ using gfoidl.Trx2Junit.Core.Abstractions;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
 using gfoidl.Trx2Junit.Core.Resources;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
+namespace gfoidl.Trx2Junit.Core.Parsers;
 
-internal sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
+public sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
 {
-    private readonly XElement  _junit;
+    private readonly XElement _junit;
     private readonly JUnitTest _test = new();
     //-------------------------------------------------------------------------
     public JUnitTestResultXmlParser(XElement junit) => _junit = junit ?? throw new ArgumentNullException(nameof(junit));
@@ -45,14 +45,14 @@ internal sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
     {
         var testSuite = new JUnitTestSuite
         {
-            Name          = xTestSuite.Attribute("name")!.Value,
-            HostName      = xTestSuite.Attribute("hostname")!.Value,
-            Id            = xTestSuite.ReadInt("id"),
-            ErrorCount    = xTestSuite.ReadInt("errors"),
-            FailureCount  = xTestSuite.ReadInt("failures"),
-            SkippedCount  = xTestSuite.ReadInt("skipped"),
+            Name = xTestSuite.Attribute("name")!.Value,
+            HostName = xTestSuite.Attribute("hostname")!.Value,
+            Id = xTestSuite.ReadInt("id"),
+            ErrorCount = xTestSuite.ReadInt("errors"),
+            FailureCount = xTestSuite.ReadInt("failures"),
+            SkippedCount = xTestSuite.ReadInt("skipped"),
             TimeInSeconds = xTestSuite.ReadDouble("time"),
-            TimeStamp     = xTestSuite.ReadDateTime("timestamp")!.Value.UtcDateTime
+            TimeStamp = xTestSuite.ReadDateTime("timestamp")!.Value.UtcDateTime
         };
 
         int? testCount = xTestSuite.ReadInt("tests");
@@ -104,7 +104,7 @@ internal sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
 
         property = new JUnitProperty
         {
-            Name  = xProperty.Attribute("name")!.Value,
+            Name = xProperty.Attribute("name")!.Value,
             Value = xProperty.Attribute("value")!.Value
         };
 
@@ -115,8 +115,8 @@ internal sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
     {
         var testCase = new JUnitTestCase
         {
-            Name          = xTestCase.Attribute("name")!.Value,
-            ClassName     = xTestCase.Attribute("classname")!.Value,
+            Name = xTestCase.Attribute("name")!.Value,
+            ClassName = xTestCase.Attribute("classname")!.Value,
             TimeInSeconds = xTestCase.ReadDouble("time"),
         };
 
@@ -131,7 +131,7 @@ internal sealed class JUnitTestResultXmlParser : ITestResultXmlParser<JUnitTest>
         {
             testCase.Error = new JUnitError
             {
-                Type    = xFailure.Attribute("type")!.Value,
+                Type = xFailure.Attribute("type")!.Value,
                 Message = xFailure.Attribute("message")!.Value
             };
         }

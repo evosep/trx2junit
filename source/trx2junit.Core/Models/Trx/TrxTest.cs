@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace gfoidl.Trx2Junit.Core.Models.Trx;
 
-internal sealed class TrxTest : Test
+public sealed class TrxTest : Test
 {
     public TrxTimes?                      Times           { get; set; }
     public TrxResultSummary?              ResultSummary   { get; set; }

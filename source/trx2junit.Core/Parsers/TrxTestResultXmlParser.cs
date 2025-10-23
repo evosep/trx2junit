@@ -7,15 +7,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using gfoidl.Trx2Junit.Core.Abstractions;
+using gfoidl.Trx2Junit.Core.Internal;
 using gfoidl.Trx2Junit.Core.Models.Trx;
 using gfoidl.Trx2Junit.Core.Resources;
 
-namespace gfoidl.Trx2Junit.Core.Internal;
+namespace gfoidl.Trx2Junit.Core.Parsers;
 
-internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<TrxTest>
+public sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<TrxTest>
 {
     private readonly XElement _trx;
-    private readonly TrxTest  _test = new();
+    private readonly TrxTest _test = new();
     //-------------------------------------------------------------------------
     public TrxTestResultXmlParser(XElement trx) => _trx = trx ?? throw new ArgumentNullException(nameof(trx));
     //-------------------------------------------------------------------------
@@ -36,25 +37,25 @@ internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<Trx
         _test.Times = new TrxTimes
         {
             Creation = xTimes.ReadDateTime("creation"),
-            Queuing  = xTimes.ReadDateTime("queuing"),
-            Start    = xTimes.ReadDateTime("start"),
-            Finish   = xTimes.ReadDateTime("finish")
+            Queuing = xTimes.ReadDateTime("queuing"),
+            Start = xTimes.ReadDateTime("start"),
+            Finish = xTimes.ReadDateTime("finish")
         };
     }
     //-------------------------------------------------------------------------
     private void ReadResultSummary()
     {
         XElement xResultSummary = _trx.Element(s_XN + "ResultSummary")!;
-        XElement xCounters      = xResultSummary.Element(s_XN + "Counters")!;
+        XElement xCounters = xResultSummary.Element(s_XN + "Counters")!;
 
         _test.ResultSummary = new TrxResultSummary
         {
-            Outcome  = ReadOutcome(xResultSummary.Attribute("outcome")!.Value).Value,
-            Errors   = xCounters.ReadInt("error"),
+            Outcome = ReadOutcome(xResultSummary.Attribute("outcome")!.Value).Value,
+            Errors = xCounters.ReadInt("error"),
             Executed = xCounters.ReadInt("executed"),
-            Failed   = xCounters.ReadInt("failed"),
-            Passed   = xCounters.ReadInt("passed"),
-            Total    = xCounters.ReadInt("total")
+            Failed = xCounters.ReadInt("failed"),
+            Passed = xCounters.ReadInt("passed"),
+            Total = xCounters.ReadInt("total")
         };
 
         // MsTest doesn't have this element, so be defensive
@@ -76,10 +77,10 @@ internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<Trx
         {
             var testDefinition = new TrxTestDefinition();
 
-            testDefinition.Id          = xUnitTest.ReadGuid("id");
+            testDefinition.Id = xUnitTest.ReadGuid("id");
             testDefinition.ExecutionId = xUnitTest.Element(s_XN + "Execution")?.ReadGuid("id");
-            testDefinition.TestClass   = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("className")!.Value;
-            testDefinition.TestMethod  = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("name")?.Value.StripTypeInfo();
+            testDefinition.TestClass = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("className")!.Value;
+            testDefinition.TestMethod = xUnitTest.Element(s_XN + "TestMethod")?.Attribute("name")?.Value.StripTypeInfo();
 
             _test.TestDefinitions.Add(testDefinition);
         }
@@ -150,13 +151,13 @@ internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<Trx
     {
         var unitTestResult = new TrxUnitTestResult
         {
-            Duration     = xResult.ReadTimeSpan("duration"),
-            EndTime      = xResult.ReadDateTime("endTime"),
-            ExecutionId  = xResult.ReadGuid("executionId"),
-            Outcome      = ReadOutcome(xResult.Attribute("outcome")?.Value, isRequired: false),
-            StartTime    = xResult.ReadDateTime("startTime"),
-            TestId       = xResult.ReadGuid("testId"),
-            TestName     = xResult.Attribute("testName")?.Value.StripTypeInfo(),
+            Duration = xResult.ReadTimeSpan("duration"),
+            EndTime = xResult.ReadDateTime("endTime"),
+            ExecutionId = xResult.ReadGuid("executionId"),
+            Outcome = ReadOutcome(xResult.Attribute("outcome")?.Value, isRequired: false),
+            StartTime = xResult.ReadDateTime("startTime"),
+            TestId = xResult.ReadGuid("testId"),
+            TestName = xResult.Attribute("testName")?.Value.StripTypeInfo(),
             ComputerName = xResult.Attribute("computerName")?.Value
         };
 
@@ -181,7 +182,7 @@ internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<Trx
 
         // MsTest doesn't report a duration for ignored tests, but 'time' is requited by junit.xsd
         if (!unitTestResult.Duration.HasValue)
-            unitTestResult.Duration = (unitTestResult.EndTime - unitTestResult.StartTime) ?? TimeSpan.Zero;
+            unitTestResult.Duration = unitTestResult.EndTime - unitTestResult.StartTime ?? TimeSpan.Zero;
 
         return unitTestResult;
     }
@@ -189,7 +190,7 @@ internal sealed class TrxTestResultXmlParser : TrxBase, ITestResultXmlParser<Trx
     // internal for testing
     internal static TrxOutcome? ReadOutcome(string? value, [DoesNotReturnIf(true)] bool isRequired = true)
     {
-        if (Enum.TryParse<TrxOutcome>(value, ignoreCase: true, out TrxOutcome result))
+        if (Enum.TryParse(value, ignoreCase: true, out TrxOutcome result))
             return result;
 
         if (isRequired)
