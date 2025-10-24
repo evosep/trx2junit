@@ -18,9 +18,9 @@ namespace gfoidl.Trx2Junit.Core.Internal
         protected abstract Func<TOut, ITestResultXmlBuilder<TOut>> BuilderFactory { get; }
         protected abstract string Extension { get; }
         //-------------------------------------------------------------------------
-        public virtual async Task ConvertAsync(Stream input, TextWriter output)
+        public async Task ConvertAsync(Stream input, TextWriter output)
         {
-            XElement testXml = await XElement.LoadAsync(input, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
+            XElement testXml = XElement.Load(input, LoadOptions.None);
 
             ITestResultXmlParser<TIn> parser = this.ParserFactory(testXml);
             parser.Parse();
@@ -33,7 +33,7 @@ namespace gfoidl.Trx2Junit.Core.Internal
             ITestResultXmlBuilder<TOut> builder = this.BuilderFactory(targetTest);
             builder.Build();
 
-            await builder.Result.SaveAsync(output, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
+            await Task.Run(() => builder.Result.Save(output, SaveOptions.None)).ConfigureAwait(false);
         }
         //-------------------------------------------------------------------------
         public string GetOutputFile(string inputFile, string outputPath = null)

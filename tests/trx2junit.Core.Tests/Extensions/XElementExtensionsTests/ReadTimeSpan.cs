@@ -14,7 +14,9 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.XElementExtensionsTests
         [TestCase(1.0280000, "03:02:01.0280000")]
         public void Xml_with_valid_TimeSpan_given___OK(double seconds, string timeString)
         {
-            TimeSpan expected = TimeSpan.FromSeconds(3 * 3600 + 2 * 60 + seconds);
+            // .NET framework/.NET 2.1 FromSeconds() has 1 ms resolution
+            TimeSpan expected = TimeSpan.FromTicks((long)((3 * 3600 + 2 * 60 + seconds) * TimeSpan.TicksPerSecond));
+//            TimeSpan expected = TimeSpan.FromSeconds(3 * 3600 + 2 * 60 + seconds);
             var xml = new XElement("data", new XAttribute("ts", timeString));
 
             TestContext.WriteLine(xml);

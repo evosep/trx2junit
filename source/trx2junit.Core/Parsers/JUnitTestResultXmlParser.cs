@@ -1,7 +1,6 @@
 // (c) gfoidl, all rights reserved
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using gfoidl.Trx2Junit.Core.Abstractions;
 using gfoidl.Trx2Junit.Core.Models.JUnit;
@@ -94,7 +93,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
             return testSuite;
         }
         //-------------------------------------------------------------------------
-        private static bool TryParseProperty(XElement xProperty, [NotNullWhen(true)] out JUnitProperty property)
+        private static bool TryParseProperty(XElement xProperty, out JUnitProperty property)
         {
             if (!xProperty.HasAttributes)
             {

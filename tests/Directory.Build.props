@@ -3,7 +3,7 @@
     <Import Project="../Directory.Build.props" />
 
     <PropertyGroup>
-        <TestTfm>net8.0;net7.0;net6.0</TestTfm>
+        <TestTfm>net8.0;net48</TestTfm>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

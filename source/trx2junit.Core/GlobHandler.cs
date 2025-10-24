@@ -42,15 +42,15 @@ namespace gfoidl.Trx2Junit.Core
 
             List<string> expandedFiles = new List<string>();
 
-            foreach (string inpupt in options.InputFiles)
+            foreach (string input in options.InputFiles)
             {
-                if (!inpupt.Contains('*'))
+                if (!input.Contains("*"))
                 {
-                    expandedFiles.Add(inpupt);
+                    expandedFiles.Add(input);
                     continue;
                 }
 
-                this.Expand(inpupt, expandedFiles);
+                this.Expand(input, expandedFiles);
             }
 
             options.InputFiles = expandedFiles;

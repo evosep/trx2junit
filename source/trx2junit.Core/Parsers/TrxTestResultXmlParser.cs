@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 using gfoidl.Trx2Junit.Core.Abstractions;
@@ -188,7 +187,7 @@ namespace gfoidl.Trx2Junit.Core.Parsers
         }
         //-------------------------------------------------------------------------
         // internal for testing
-        internal static TrxOutcome? ReadOutcome(string value, [DoesNotReturnIf(true)] bool isRequired = true)
+        internal static TrxOutcome? ReadOutcome(string value, bool isRequired = true)
         {
             if (Enum.TryParse(value, ignoreCase: true, out TrxOutcome result))
                 return result;

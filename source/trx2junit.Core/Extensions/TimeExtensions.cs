@@ -21,28 +21,30 @@ namespace gfoidl.Trx2Junit.Core
         //-------------------------------------------------------------------------
         public static string ToJUnitDateTime(this DateTime dt)
         {
-            return string.Create(19, dt, (buffer, value) => FormatDateTime(buffer, value));
+            var buffer = new Span<char>(new char[19]);
+            FormatDateTime(buffer, dt);
+            return buffer.ToString();
+//            return string.Create(19, dt, (buffer, value) => FormatDateTime(buffer, value));
         }
         //-------------------------------------------------------------------------
         public static string ToTrxDateTime(this DateTimeOffset dt)
         {
-            return string.Create(19 + 1 + 3 + 6, dt, (buffer, value) =>
+            var buffer = new Span<char>(new char[19 + 1 + 3 + 6]);
+            s_trxDateTimeTemplate.CopyTo(buffer);
+            FormatDateTime(buffer, dt);
+
+            dt.Millisecond.TryFormat(buffer.Slice(20), out int written, "000".AsSpan());
+            Debug.Assert(written == 3);
+
+            int offsetHours = dt.Offset.Hours;
+            if (offsetHours < 0)
             {
-                s_trxDateTimeTemplate.CopyTo(buffer);
-                FormatDateTime(buffer, value);
-
-                value.Millisecond.TryFormat(buffer.Slice(20), out int written, "000");
-                Debug.Assert(written == 3);
-
-                int offsetHours = value.Offset.Hours;
-                if (offsetHours < 0)
-                {
-                    buffer[23] = '-';
-                    offsetHours = -offsetHours;
-                }
-                offsetHours.TryFormat(buffer.Slice(24), out written, "00");
-                Debug.Assert(written == 2);
-            });
+                buffer[23] = '-';
+                offsetHours = -offsetHours;
+            }
+            offsetHours.TryFormat(buffer.Slice(24), out written, "00".AsSpan());
+            Debug.Assert(written == 2);
+            return buffer.ToString();
         }
         //-------------------------------------------------------------------------
         public static string ToJUnitTime(this double value) => value.ToString("0.000", CultureInfo.InvariantCulture);

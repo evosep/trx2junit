@@ -41,7 +41,7 @@ namespace gfoidl.Trx2Junit.Core.Tests.Internal.TrxTestResultXmlParserTests
         {
             foreach (string value in Enum.GetNames(typeof(TrxOutcome)))
             {
-                TrxOutcome tmp = Enum.Parse<TrxOutcome>(value);
+                TrxOutcome tmp = (TrxOutcome)Enum.Parse(typeof(TrxOutcome), value);
                 int expected = (int)tmp;
 
                 yield return new TestCaseData(value, true).Returns(expected);

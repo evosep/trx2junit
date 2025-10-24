@@ -1,5 +1,6 @@
 // (c) gfoidl, all rights reserved
 
+using System;
 using NUnit.Framework;
 
 namespace gfoidl.Trx2Junit.Core.Tests.Extensions.IntExtensionsTests
@@ -14,7 +15,10 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.IntExtensionsTests
         public void Lt_10___OK(int value)
         {
             string expected = value.ToString("00");
-            string actual = string.Create(2, value, (buffer, state) => state.Format2DigitIntFast(buffer));
+            var buffer = new Span<char>(new char[2]);
+            value.Format2DigitIntFast(buffer);
+            var actual = buffer.ToString();
+//            string actual = string.Create(2, value, (buffer, state) => state.Format2DigitIntFast(buffer));
 
             Assert.AreEqual(expected, actual);
         }
@@ -26,7 +30,10 @@ namespace gfoidl.Trx2Junit.Core.Tests.Extensions.IntExtensionsTests
         public void Ge_10___OK(int value)
         {
             string expected = value.ToString("00");
-            string actual = string.Create(2, value, (buffer, state) => state.Format2DigitIntFast(buffer));
+            var buffer = new Span<char>(new char[2]);
+            value.Format2DigitIntFast(buffer);
+            var actual = buffer.ToString();
+//            string actual = string.Create(2, value, (buffer, state) => state.Format2DigitIntFast(buffer));
 
             Assert.AreEqual(expected, actual);
         }

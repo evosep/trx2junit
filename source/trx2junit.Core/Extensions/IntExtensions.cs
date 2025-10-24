@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace gfoidl.Trx2Junit.Core
 {
@@ -77,5 +78,21 @@ namespace gfoidl.Trx2Junit.Core
         }
         //-------------------------------------------------------------------------
         private static bool IsCharDigit(char c) => (uint)(c - '0') <= '9' - '0';
+
+        public static bool TryFormat(this int value, Span<char> buffer,  out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider provider = default)
+        {
+            try
+            {
+                var formatted = value.ToString(format.IsEmpty ? "G" : format.ToString(), provider ?? Thread.CurrentThread.CurrentCulture);
+                formatted.AsSpan().CopyTo(buffer);
+                charsWritten = formatted.Length;
+                return true;
+            }
+            catch (FormatException)
+            {
+                charsWritten = 0;
+                return false;
+            }
+        }
     }
 }

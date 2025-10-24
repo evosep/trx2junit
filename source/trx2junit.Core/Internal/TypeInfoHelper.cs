@@ -1,19 +1,19 @@
 // (c) gfoidl, all rights reserved
 
 using System;
-using System.Diagnostics.CodeAnalysis;
+//using System.Diagnostics.CodeAnalysis;
 
 namespace gfoidl.Trx2Junit.Core
 {
 
     internal static class TypeInfoHelper
     {
-        [return: NotNullIfNotNull(nameof(name))]
+        //[return: NotNullIfNotNull(nameof(name))]
         public static string StripTypeInfo(this string name)
         {
             if (name is null) return null;
 
-            ReadOnlySpan<char> span = name;
+            ReadOnlySpan<char> span = name.AsSpan();
 
             int parenthesisIndex = span.IndexOf('(');
             if (parenthesisIndex < 0)
@@ -26,9 +26,10 @@ namespace gfoidl.Trx2Junit.Core
 
             preParenthesis = StripTypeInfo(preParenthesis);
 
-#if NET6_0_OR_GREATER
-        return string.Concat(preParenthesis, parenthisContent);
-#else
+//#if NET6_0_OR_GREATER
+        return string.Concat(preParenthesis.ToString(), parenthisContent.ToString());
+//#else
+        /* optimized concat?
             int finalLength = preParenthesis.Length + parenthisContent.Length;
             unsafe
             {
@@ -50,6 +51,7 @@ namespace gfoidl.Trx2Junit.Core
                 }
             }
 #endif
+        */
         }
         //-------------------------------------------------------------------------
         private static ReadOnlySpan<char> StripTypeInfo(ReadOnlySpan<char> name)
