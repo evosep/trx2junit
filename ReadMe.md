@@ -1,12 +1,10 @@
-| CI | NuGet |
-| -- | -- |
-| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/.NET/trx2junit?branchName=master)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=35&branchName=master) | [![NuGet](https://img.shields.io/nuget/v/trx2junit.svg?style=flat-square)](https://www.nuget.org/packages/trx2junit/) |
-
 # trx2junit (.NET Core global tool)
 
 Helper for converting trx-Testresults (`dotnet test --logger "trx"`) to a JUnit-based XML file.
 
 Can be used for CI-scenarios, like [CircleCi](https://circleci.com/) or [GitLab](https://docs.gitlab.com/ee/ci/junit_test_reports.html), where as test results JUnit is expected.
+
+The master branch only improves visibility of converters, builders, and parsers, so these may be used individually.
 
 ## Usage
 
